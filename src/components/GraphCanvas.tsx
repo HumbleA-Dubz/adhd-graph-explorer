@@ -12,7 +12,7 @@ export function GraphCanvas() {
   const graphRef = useRef<Graph | null>(null);
   const graphDataRef = useRef<GraphData | null>(null);
   const initializedRef = useRef(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
   const setGraphData = useStore(state => state.setGraphData);
@@ -58,59 +58,50 @@ export function GraphCanvas() {
     const options = createGraphOptions(g6Data);
 
     async function init() {
-      let graph: Graph | null = null;
-      try {
-        graph = new Graph({
-          container,
-          width: container.clientWidth || window.innerWidth,
-          height: container.clientHeight || window.innerHeight,
-          ...options,
-        });
+      const graph = new Graph({
+        container,
+        width: container.clientWidth || window.innerWidth,
+        height: container.clientHeight || window.innerHeight,
+        ...options,
+      });
 
-        // Register custom behaviors
-        registerGraphBehaviors(graph, {
-          onNodeClick: handleNodeClick,
-          onNodeHover: handleNodeHover,
-          onCanvasClick: handleCanvasClick,
-        });
+      // Register custom behaviors
+      registerGraphBehaviors(graph, {
+        onNodeClick: handleNodeClick,
+        onNodeHover: handleNodeHover,
+        onCanvasClick: handleCanvasClick,
+      });
 
-        // G6 v5.0.51 render() may throw (r.assign bug) or hang.
-        // Race it against a timeout so the UI is never stuck loading.
-        const renderWithTimeout = Promise.race([
-          graph.render().catch((renderErr: unknown) => {
-            console.warn('[G6] Non-fatal render error (graph may still work):', renderErr);
-          }),
-          new Promise<void>((resolve) => setTimeout(resolve, 8000)),
-        ]);
+      // Expose graph ref immediately so resize observer works,
+      // but don't mark ready until render settles.
+      graphRef.current = graph;
 
-        await renderWithTimeout;
-      } catch (err) {
-        // Even if something throws, the graph canvas may have drawn
-        // successfully — log but don't block the UI.
-        console.warn('[G6] Error during init (graph may still work):', err);
-      }
+      // Auto fit-to-screen once the force layout stabilizes.
+      const fitOnce = () => {
+        try { graph.fitView(); } catch { /* destroyed */ }
+        graph.off('afterlayout', fitOnce);
+      };
+      graph.on('afterlayout', fitOnce);
 
-      // Always expose the graph and mark ready if we have a graph
-      // instance and the container still has canvas children
-      // (indicating G6 drew something).
-      if (graph && container.querySelector('canvas')) {
-        graphRef.current = graph;
+      // G6 v5.0.51 render() may reject (r.assign bug) or hang.
+      // Fire-and-forget: the graph draws to canvas progressively
+      // regardless of whether the promise resolves.
+      graph.render().catch((renderErr: unknown) => {
+        console.warn('[G6] Non-fatal render error (graph may still work):', renderErr);
+      });
+
+      // Mark ready after a short delay so the React tree can render
+      // the canvas container, and schedule fitView fallbacks.
+      setTimeout(() => {
         setReady(true);
+      }, 300);
 
-        // Auto fit-to-screen once the force layout stabilizes.
-        // G6 fires 'afterlayout' when the simulation ends.
-        const fitOnce = () => {
-          try { graph.fitView(); } catch { /* destroyed */ }
-          graph.off('afterlayout', fitOnce);
-        };
-        graph.on('afterlayout', fitOnce);
-
-        // Fallback: if afterlayout never fires (bug), fit after 4s
+      // Fallback fitView calls at staggered intervals to catch
+      // the layout at various stages of the d3-force simulation.
+      for (const delay of [2000, 5000, 10000]) {
         setTimeout(() => {
           try { graph.fitView(); } catch { /* destroyed */ }
-        }, 4000);
-      } else {
-        setError('Graph failed to initialize — no canvas was created.');
+        }, delay);
       }
     }
 
@@ -154,36 +145,40 @@ export function GraphCanvas() {
     const graph = graphRef.current;
     if (!graph) return;
 
-    const allNodes = graph.getNodeData();
-    for (const node of allNodes) {
-      const entityType = (node.data as Record<string, unknown>)?.entityType as CanvasEntityType | undefined;
-      if (!entityType) continue;
+    try {
+      const allNodes = graph.getNodeData();
+      for (const node of allNodes) {
+        const entityType = (node.data as Record<string, unknown>)?.entityType as CanvasEntityType | undefined;
+        if (!entityType) continue;
 
-      const shouldBeVisible = visibleEntityTypes.has(entityType);
-      graph.setElementVisibility(node.id as string, shouldBeVisible ? 'visible' : 'hidden');
+        const shouldBeVisible = visibleEntityTypes.has(entityType);
+        graph.setElementVisibility(node.id as string, shouldBeVisible ? 'visible' : 'hidden');
 
-      // Hide edges where this node is hidden
-      if (!shouldBeVisible) {
-        const relatedEdges = graph.getRelatedEdgesData(node.id as string);
-        for (const edge of relatedEdges) {
-          graph.setElementVisibility(edge.id as string, 'hidden');
+        // Hide edges where this node is hidden
+        if (!shouldBeVisible) {
+          const relatedEdges = graph.getRelatedEdgesData(node.id as string);
+          for (const edge of relatedEdges) {
+            graph.setElementVisibility(edge.id as string, 'hidden');
+          }
         }
       }
-    }
 
-    // Re-show edges where BOTH endpoints are visible
-    const allEdges = graph.getEdgeData();
-    for (const edge of allEdges) {
-      const sourceData = graph.getNodeData(edge.source as string);
-      const targetData = graph.getNodeData(edge.target as string);
-      if (!sourceData || !targetData) continue;
+      // Re-show edges where BOTH endpoints are visible
+      const allEdges = graph.getEdgeData();
+      for (const edge of allEdges) {
+        const sourceData = graph.getNodeData(edge.source as string);
+        const targetData = graph.getNodeData(edge.target as string);
+        if (!sourceData || !targetData) continue;
 
-      const sourceType = (sourceData.data as Record<string, unknown>)?.entityType as CanvasEntityType | undefined;
-      const targetType = (targetData.data as Record<string, unknown>)?.entityType as CanvasEntityType | undefined;
+        const sourceType = (sourceData.data as Record<string, unknown>)?.entityType as CanvasEntityType | undefined;
+        const targetType = (targetData.data as Record<string, unknown>)?.entityType as CanvasEntityType | undefined;
 
-      if (sourceType && targetType && visibleEntityTypes.has(sourceType) && visibleEntityTypes.has(targetType)) {
-        graph.setElementVisibility(edge.id as string, 'visible');
+        if (sourceType && targetType && visibleEntityTypes.has(sourceType) && visibleEntityTypes.has(targetType)) {
+          graph.setElementVisibility(edge.id as string, 'visible');
+        }
       }
+    } catch {
+      // Elements may not exist yet during initial render — safe to ignore
     }
   }, [visibleEntityTypes, ready]);
 
@@ -194,11 +189,15 @@ export function GraphCanvas() {
     const graph = graphRef.current;
     if (!graph) return;
 
-    const allCombos = graph.getComboData();
-    for (const combo of allCombos) {
-      const comboId = combo.id as string;
-      const shouldBeVisible = visibleClusters.has(comboId);
-      graph.setElementVisibility(comboId, shouldBeVisible ? 'visible' : 'hidden');
+    try {
+      const allCombos = graph.getComboData();
+      for (const combo of allCombos) {
+        const comboId = combo.id as string;
+        const shouldBeVisible = visibleClusters.has(comboId);
+        graph.setElementVisibility(comboId, shouldBeVisible ? 'visible' : 'hidden');
+      }
+    } catch {
+      // Elements may not exist yet during initial render — safe to ignore
     }
   }, [visibleClusters, ready]);
 
