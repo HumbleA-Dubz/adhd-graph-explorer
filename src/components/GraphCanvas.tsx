@@ -73,7 +73,18 @@ export function GraphCanvas() {
           onCanvasClick: handleCanvasClick,
         });
 
-        await graph.render();
+        try {
+          await graph.render();
+        } catch (renderErr) {
+          // G6 v5.0.51 has a known bug where combo processing throws
+          // "r.assign is not a function" — the graph still renders fine.
+          // Log but don't treat as fatal.
+          console.warn('[G6] Non-fatal render error (graph may still work):', renderErr);
+        }
+
+        // Only store ref and mark ready AFTER render completes,
+        // so filter/preset effects don't call setElementVisibility
+        // on elements that don't exist yet.
         graphRef.current = graph;
         setReady(true);
       } catch (err) {
@@ -96,12 +107,13 @@ export function GraphCanvas() {
   // ── Preset application ──────────────────────────────────────────────
   const activePreset = useStore(state => state.activePreset);
   useEffect(() => {
+    if (!ready) return;
     const graph = graphRef.current;
     const graphData = graphDataRef.current;
     if (!graph || !graphData) return;
 
     applyPreset(graph, graphData, activePreset);
-  }, [activePreset]);
+  }, [activePreset, ready]);
 
   // ── Keyboard navigation ─────────────────────────────────────────────
   useEffect(() => {
@@ -117,6 +129,7 @@ export function GraphCanvas() {
   // Respond to filter changes: visibleEntityTypes
   const visibleEntityTypes = useStore(state => state.visibleEntityTypes);
   useEffect(() => {
+    if (!ready) return;
     const graph = graphRef.current;
     if (!graph) return;
 
@@ -151,11 +164,12 @@ export function GraphCanvas() {
         graph.setElementVisibility(edge.id as string, 'visible');
       }
     }
-  }, [visibleEntityTypes]);
+  }, [visibleEntityTypes, ready]);
 
   // Respond to filter changes: visibleClusters
   const visibleClusters = useStore(state => state.visibleClusters);
   useEffect(() => {
+    if (!ready) return;
     const graph = graphRef.current;
     if (!graph) return;
 
@@ -165,7 +179,7 @@ export function GraphCanvas() {
       const shouldBeVisible = visibleClusters.has(comboId);
       graph.setElementVisibility(comboId, shouldBeVisible ? 'visible' : 'hidden');
     }
-  }, [visibleClusters]);
+  }, [visibleClusters, ready]);
 
   // Handle window resize with ResizeObserver
   useEffect(() => {
