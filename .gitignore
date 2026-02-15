@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.local
+.vite/
+
+# Generated graph data (now committed for reliable Vercel builds)
+# src/data/graph.json
