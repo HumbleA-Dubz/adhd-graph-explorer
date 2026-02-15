@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.local
+.vite/
+
+# Generated graph data
+src/data/graph.json

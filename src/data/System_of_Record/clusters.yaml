@@ -1,0 +1,184 @@
+# clusters.yaml
+# Observed co-occurrence groupings of functional problems.
+# Clusters describe WHAT goes together. Mechanisms (separate
+# file) describe WHY.
+#
+# Three clusters emerged from practitioner-documented cascades,
+# multi-domain impairment data, and mediation analysis.
+# Four standalone problems did not cluster.
+
+Cluster A — Time-Perception Cascade:
+  id: CL_A
+  hub: Time Estimation and Time Blindness (FP03)
+  members:
+    - problem: Time Estimation and Time Blindness
+      role: hub
+      evidence: >
+        Q3 connectedness 5/5. Addressing time blindness directly
+        reduces FP04, FP12, and partially FP08.
+    - problem: Deadline Misses
+      role: receiver
+      evidence: >
+        Misjudged duration leads to insufficient time allocated.
+        Also receives from Cluster C (focus failures).
+    - problem: Chronic Lateness
+      role: receiver
+      evidence: >
+        Misjudged preparation/travel time. Direct manifestation
+        of time-perception deficit.
+    - problem: Long-Term Project Neglect
+      role: partial receiver
+      evidence: >
+        Delay discounting is a time-perception failure — distant
+        deadlines create zero urgency because time horizon is
+        compressed. Also receives from Cluster B (initiation).
+  primary_mechanism: Time Perception Distortion
+  causal_direction: >
+    Single hub radiating outward. FP03 causes FP04, FP12,
+    and partially FP08. No bidirectional causation within
+    the cluster.
+  claims: [C008, C009, C010]
+  derived_from: Our_S4
+
+Cluster B — Initiation-Execution Bottleneck:
+  id: CL_B
+  hub: Task Initiation Failure (FP01)
+  members:
+    - problem: Task Initiation Failure
+      role: hub
+      evidence: >
+        Q3 connectedness 4/5. Initiation barrier applied to
+        different task types produces the two downstream problems.
+    - problem: Long-Term Project Neglect
+      role: receiver
+      evidence: >
+        Initiation barrier is highest for low-urgency, low-
+        stimulation strategic work. Also receives from Cluster A.
+    - problem: Documentation and Administrative Paralysis
+      role: receiver
+      evidence: >
+        Documentation is maximally aversive to initiate — low
+        stimulation plus high effort plus no immediate reward.
+  primary_mechanism: Reward and Activation Processing
+  causal_direction: >
+    Single hub radiating outward. FP01 causes FP08 and FP11
+    through the same mechanism (activation energy exceeds
+    capacity) applied to task types with decreasing stimulation.
+  claims: [C011, C012]
+  derived_from: Our_S4
+
+Cluster C — Attention-Quality Chain:
+  id: CL_C
+  hub: Inconsistent Focus (FP02)
+  members:
+    - problem: Inconsistent Focus
+      role: hub
+      evidence: >
+        Q3 connectedness 4/5. Focus lapses produce both errors
+        (FP06) and insufficient output (FP04).
+    - problem: Attention-to-Detail Errors
+      role: receiver
+      evidence: >
+        Focus lapses during task execution produce errors of
+        oversight that survive self-checking.
+    - problem: Deadline Misses
+      role: shared receiver
+      evidence: >
+        Low-productivity days accumulate into insufficient
+        output by deadline. Also receives from Cluster A.
+  primary_mechanism: Attention Allocation Dysfunction
+  causal_direction: >
+    Single hub radiating outward. FP02 causes FP06 directly
+    and FP04 through accumulated productivity loss. FP04 is
+    a convergence point receiving from both Cluster A and C.
+  claims: [C001, C002, C006]
+  derived_from: Our_S4
+
+# ═══════════════════════════════════════════════════════════════
+# CROSS-CLUSTER INTERACTIONS
+# ═══════════════════════════════════════════════════════════════
+
+Cross-Cluster Amplifier — Prioritisation:
+  id: CL_AMP
+  type: amplifier
+  problem: Prioritisation Failure (FP05)
+  affects: [CL_A, CL_B, CL_C]
+  mechanism: >
+    FP05 worsens all clusters: can't prioritise which deadlines
+    matter (A), prioritises easy over strategic work — procrastivity
+    (B), focuses on wrong tasks amplifying limited focus capacity (C).
+  claims: [C012, C013]
+  derived_from: Our_S4
+
+Cross-Cluster Receiver — Deadline Misses:
+  id: CL_CONV_FP04
+  type: convergence_point
+  problem: Deadline Misses (FP04)
+  receives_from: [CL_A, CL_C]
+  mechanism: >
+    Receives causal pressure from time blindness (insufficient
+    time allocated) and focus failure (insufficient output
+    produced). Eliminating deadline misses likely requires
+    addressing both upstream causes.
+  derived_from: Our_S4
+
+Cross-Cluster Receiver — Long-Term Project Neglect:
+  id: CL_CONV_FP08
+  type: convergence_point
+  problem: Long-Term Project Neglect (FP08)
+  receives_from: [CL_A, CL_B]
+  mechanism: >
+    Receives from time blindness (delay discounting compresses
+    time horizon) and initiation failure (activation energy
+    highest for low-urgency work). Effective intervention likely
+    requires addressing both.
+  derived_from: Our_S4
+
+# ═══════════════════════════════════════════════════════════════
+# STANDALONE PROBLEMS
+# Did not cluster. Documented here for completeness.
+# ═══════════════════════════════════════════════════════════════
+
+Standalone — Meeting Memory Failure:
+  id: CL_STANDALONE_FP07
+  type: standalone
+  problem: Meeting and Instruction Memory Failure (FP07)
+  reason: >
+    Encoding deficit operates independently of time perception,
+    initiation, and focus. Occurs even when user is fully
+    engaged. Shares working memory root with FP09 but solving
+    one wouldn't solve the other — contexts and failure modes
+    differ.
+  derived_from: Our_S4
+
+Standalone — Email Management Failure:
+  id: CL_STANDALONE_FP09
+  type: standalone
+  problem: Email and Communication Management Failure (FP09)
+  reason: >
+    Involves a specific combination of initiation, prospective
+    memory, and avoidance in a contained domain. Connects
+    loosely to FP01 (initiation) and FP07 (memory) but neither
+    fully explains the email-specific avoidance cycle.
+  derived_from: Our_S4
+
+Standalone — Context Switching Cost:
+  id: CL_STANDALONE_FP10
+  type: standalone
+  problem: Context Switching Cost (FP10)
+  reason: >
+    Environmental/workload interaction more than core EF failure.
+    Influenced by meeting culture and notification environment
+    (partially outside individual control). Shares context with
+    FP02 (focus) but mechanistically different.
+  derived_from: Our_S4
+
+Standalone — Workspace Disorganisation:
+  id: CL_STANDALONE_FP18
+  type: standalone
+  problem: Workspace Disorganisation (FP18)
+  reason: >
+    Shares self-organisation EF deficit with Cluster B but
+    operates in a different domain (physical/digital
+    environment, not task execution). Lowest score in the set.
+  derived_from: Our_S4

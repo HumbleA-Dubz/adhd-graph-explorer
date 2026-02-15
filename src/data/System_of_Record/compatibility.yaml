@@ -1,0 +1,144 @@
+# compatibility.yaml
+# Structural compatibility between problem clusters/problems
+# and engagement models. Ratings are S (strongly compatible),
+# P (partially compatible), X (incompatible).
+#
+# Ratings are structural assessments based on dimensional
+# matching, not empirical measurements. Implementation
+# quality determines actual compatibility.
+#
+# Derived from Cross_Layer_Mapping.md
+
+# ═══════════════════════════════════════════════════════════════
+# PROBLEM-MODEL COMPATIBILITY MATRIX
+# ═══════════════════════════════════════════════════════════════
+
+Cluster A — Time-Perception Cascade:
+  Ambient Monitor and Intervene: S
+  Passive Capture and Structured Delivery: P
+  Modality Shift: X
+  Intelligent Reordering: P
+  Calibration Feedback Loop: S
+  Periodic Injection: P
+  Structured Check-In: P
+  On-Demand Scaffolding: X
+
+Cluster B — Initiation-Execution Bottleneck:
+  Ambient Monitor and Intervene: S
+  Passive Capture and Structured Delivery: X
+  Modality Shift: P
+  Intelligent Reordering: S
+  Calibration Feedback Loop: X
+  Periodic Injection: P
+  Structured Check-In: P
+  On-Demand Scaffolding: P
+
+Cluster C — Attention-Quality Chain:
+  Ambient Monitor and Intervene: S
+  Passive Capture and Structured Delivery: P
+  Modality Shift: X
+  Intelligent Reordering: P
+  Calibration Feedback Loop: P
+  Periodic Injection: X
+  Structured Check-In: P
+  On-Demand Scaffolding: P
+
+Prioritisation Failure (FP05):
+  Ambient Monitor and Intervene: P
+  Passive Capture and Structured Delivery: X
+  Modality Shift: X
+  Intelligent Reordering: S
+  Calibration Feedback Loop: P
+  Periodic Injection: P
+  Structured Check-In: S
+  On-Demand Scaffolding: P
+
+Meeting Memory Failure (FP07):
+  Ambient Monitor and Intervene: P
+  Passive Capture and Structured Delivery: S
+  Modality Shift: X
+  Intelligent Reordering: X
+  Calibration Feedback Loop: X
+  Periodic Injection: P
+  Structured Check-In: P
+  On-Demand Scaffolding: X
+
+Email Management Failure (FP09):
+  Ambient Monitor and Intervene: P
+  Passive Capture and Structured Delivery: S
+  Modality Shift: P
+  Intelligent Reordering: P
+  Calibration Feedback Loop: X
+  Periodic Injection: P
+  Structured Check-In: P
+  On-Demand Scaffolding: X
+
+# ═══════════════════════════════════════════════════════════════
+# META-CHALLENGE VULNERABILITY MATRIX
+# H = High vulnerability, M = Moderate, L = Low
+# ═══════════════════════════════════════════════════════════════
+
+meta_challenge_vulnerability:
+  Ambient Monitor and Intervene:
+    Novelty Decay: M
+    Circular Dependency: L
+    Shame-Avoidance Spiral: L
+    Disclosure Constraint: M
+    Notification Desensitisation: H
+    summary: "1H / 2M / 2L"
+
+  Passive Capture and Structured Delivery:
+    Novelty Decay: L
+    Circular Dependency: L
+    Shame-Avoidance Spiral: L
+    Disclosure Constraint: M
+    Notification Desensitisation: M
+    summary: "0H / 2M / 3L"
+
+  Modality Shift:
+    Novelty Decay: M
+    Circular Dependency: H
+    Shame-Avoidance Spiral: L
+    Disclosure Constraint: M
+    Notification Desensitisation: L
+    summary: "1H / 2M / 2L"
+
+  Intelligent Reordering:
+    Novelty Decay: M
+    Circular Dependency: M
+    Shame-Avoidance Spiral: M
+    Disclosure Constraint: L
+    Notification Desensitisation: M
+    summary: "0H / 4M / 1L"
+
+  Calibration Feedback Loop:
+    Novelty Decay: M
+    Circular Dependency: H
+    Shame-Avoidance Spiral: M
+    Disclosure Constraint: M
+    Notification Desensitisation: M
+    summary: "1H / 4M / 0L"
+
+  Periodic Injection:
+    Novelty Decay: M
+    Circular Dependency: L
+    Shame-Avoidance Spiral: M
+    Disclosure Constraint: L
+    Notification Desensitisation: L
+    summary: "0H / 2M / 3L"
+
+  Structured Check-In:
+    Novelty Decay: H
+    Circular Dependency: H
+    Shame-Avoidance Spiral: H
+    Disclosure Constraint: M
+    Notification Desensitisation: M
+    summary: "3H / 2M / 0L"
+
+  On-Demand Scaffolding:
+    Novelty Decay: L
+    Circular Dependency: H
+    Shame-Avoidance Spiral: L
+    Disclosure Constraint: L
+    Notification Desensitisation: L
+    summary: "1H / 0M / 4L"

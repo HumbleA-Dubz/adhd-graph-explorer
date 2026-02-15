@@ -1,0 +1,246 @@
+# mechanisms.yaml
+# Cross-cutting cognitive/neurological mechanisms that explain
+# WHY functional problems co-occur.
+#
+# Mechanisms sit alongside clusters, not inside them:
+#   Clusters  = observed co-occurrence ("these show up together")
+#   Mechanisms = proposed explanation ("here's why")
+#
+# Each mechanism is a distinct neurological process, not a
+# restatement of a functional problem.
+
+Time Perception Distortion:
+  id: MECH01
+  plain_language: >
+    The inability to sense how much time has passed or how much
+    time something will take. Not poor planning — the internal
+    clock runs differently. An hour can feel like ten minutes.
+    A deadline three days away feels as distant as one three
+    months away.
+  affects_problems:
+    - Time Blindness (primary)
+    - Deadline Misses
+    - Chronic Lateness
+  underlies_challenges:
+    - Notification Desensitisation (partially — timing of
+      notifications relative to perceived urgency)
+  favours_models:
+    - Ambient Monitor and Intervene (real-time time awareness)
+    - Calibration Feedback Loop (estimation vs actual)
+  disfavours_models:
+    - On-Demand Scaffolding (requires user to notice time has
+      passed, which is the deficit)
+    - Modality Shift (changes input channel, not time perception)
+  variability: >
+    Moderate. Some individuals experience more stable time
+    distortion; others see meaningful variation by day or context.
+  evidence: [C008, C009, C010]
+  does_not_explain: >
+    Task initiation failure — a person can be aware that time
+    is passing and still not start. Initiation is primarily a
+    reward/activation problem, not a time-perception problem.
+
+Reward and Activation Processing:
+  id: MECH02
+  plain_language: >
+    The brain's activation system runs on interest, novelty,
+    urgency, and challenge — not importance. Tasks that lack
+    these qualities cannot generate the activation energy
+    needed to start or sustain work. Distant deadlines create
+    near-zero urgency. Familiar tasks create near-zero novelty.
+    The result: the important-but-boring thing never gets done.
+  affects_problems:
+    - Task Initiation Failure (primary)
+    - Long-Term Project Neglect
+    - Documentation Paralysis
+    - Prioritisation Failure (partially — interest overrides
+      importance in task selection)
+  underlies_challenges:
+    - Novelty Decay (directly — the product itself is subject
+      to the same habituation)
+    - Notification Desensitisation (partially — notifications
+      lose novelty)
+  favours_models:
+    - Ambient Monitor and Intervene (bypasses the need for
+      self-initiated activation)
+    - Intelligent Reordering (matches tasks to current
+      activation state)
+    - Periodic Injection (creates artificial entry points)
+  disfavours_models:
+    - Structured Check-In (requires self-initiated daily
+      engagement — competing against the deficit)
+    - On-Demand Scaffolding (requires user to notice and
+      seek help — a meta-initiation problem)
+  variability: >
+    Highly variable. Medication, sleep, novelty of current
+    context, and mood all modulate activation thresholds.
+    What a person can start on Monday may be impossible on
+    Tuesday.
+  evidence: [C011, C012, C013]
+  does_not_explain: >
+    Meeting memory failure — a person can be fully activated
+    and engaged in a meeting but still fail to encode or
+    remember commitments. Encoding is a separate mechanism.
+
+Prospective Memory Failure:
+  id: MECH03
+  plain_language: >
+    Forgetting to do things you intended to do. Not forgetting
+    facts — forgetting intentions. You read the email and
+    decided to reply after lunch. After lunch, the intention
+    is gone. You left the meeting knowing you committed to send
+    a document. By the time you reach your desk, the commitment
+    has vanished. "Out of sight, out of mind" is the defining
+    experience.
+  affects_problems:
+    - Meeting Memory Failure (partially — the commitment
+      follow-through component)
+    - Email Management Failure (the "read and forgot" pattern)
+    - Long-Term Project Neglect (partially — forgetting to
+      check on distant projects)
+  underlies_challenges:
+    - Circular Dependency (directly — forgetting to use the
+      tool is a prospective memory failure)
+  favours_models:
+    - Passive Capture and Structured Delivery (captures
+      commitments the user will forget)
+    - Periodic Injection (resurfaces neglected commitments)
+  disfavours_models:
+    - Structured Check-In (user must remember to attend)
+    - On-Demand Scaffolding (user must remember the tool
+      exists at the moment of need)
+    - Calibration Feedback Loop (user must remember to estimate)
+  variability: >
+    Relatively stable. Prospective memory failure is one of
+    the more consistent ADHD deficits — less variable across
+    days and contexts than activation or attention.
+  evidence: [C016, C017, C019]
+  does_not_explain: >
+    Why users cannot start tasks they are looking directly at.
+    Prospective memory is about absent cues — the intention
+    is not in front of you. When the task IS in front of you
+    and you still can't start, that is activation, not memory.
+
+Encoding Deficit:
+  id: MECH04
+  plain_language: >
+    Information does not get stored during real-time processing,
+    even when the person is engaged and comprehending. You
+    understood everything in the meeting. You were paying
+    attention. But the information never made it into memory.
+    This is not a retrieval problem — the information was never
+    encoded in the first place.
+  affects_problems:
+    - Meeting Memory Failure (primarily — the encoding component)
+    - Attention-to-Detail Errors (partially — details not
+      encoded during processing lead to errors in output)
+  underlies_challenges: []
+  favours_models:
+    - Passive Capture and Structured Delivery (creates external
+      record of what encoding failed to capture)
+  disfavours_models:
+    - Any model that assumes the user retained information from
+      a meeting, conversation, or reading session
+  variability: >
+    Relatively stable. Encoding deficit is a consistent
+    impairment, less affected by day-to-day variation than
+    attention or activation.
+  evidence: [C014, C015, C016]
+  does_not_explain: >
+    Task initiation or prioritisation. Encoding deficit affects
+    information retention, not decision-making or activation.
+    A person can have perfect encoding and still not start work.
+
+Attention Allocation Dysfunction:
+  id: MECH05
+  plain_language: >
+    The inability to voluntarily direct and sustain focus where
+    you choose. This produces BOTH hypofocus (attention drifts
+    without awareness) AND hyperfocus (attention locks onto
+    something stimulating and cannot be redirected). The same
+    mechanism — dysregulated allocation — creates opposite
+    presentations depending on the stimulus.
+  affects_problems:
+    - Inconsistent Focus (primary)
+    - Attention-to-Detail Errors
+    - Context Switching Cost
+  underlies_challenges:
+    - Novelty Decay (partially — focus tools themselves
+      habituate as stimuli)
+    - Notification Desensitisation (notifications must break
+      through dysregulated attention to have effect)
+  favours_models:
+    - Ambient Monitor and Intervene (detects focus drift in
+      real time)
+    - Intelligent Reordering (matches tasks to current
+      focus/energy state)
+  disfavours_models:
+    - Modality Shift (changing input mode does not fix
+      attention allocation)
+    - Periodic Injection (operates between tasks; attention
+      dysfunction is within-task)
+  variability: >
+    Highly variable. Medication, environment, interest level,
+    and fatigue all substantially modulate attention allocation.
+  evidence: [C006, C007]
+  does_not_explain: >
+    Email or meeting memory failure. A person can be fully
+    focused during a meeting (attention allocated correctly)
+    and still fail to encode or remember commitments. Attention
+    and encoding are separable deficits.
+  note_on_distinction: >
+    There is a risk that this mechanism restates the problem
+    it explains (Inconsistent Focus). The distinction drawn:
+    the problem is the functional manifestation at work; the
+    mechanism is the underlying process that also produces
+    hyperfocus. Hyperfocus is not a problem — it is the same
+    mechanism in a different mode. This distinction may be thin.
+
+Emotional Dysregulation:
+  id: MECH06
+  plain_language: >
+    Heightened sensitivity to criticism, rejection, failure,
+    and frustration. Shame responses that are faster and more
+    intense than neurotypical. Fear of doing something wrong
+    can prevent starting. Missing a day creates a shame spiral
+    that prevents returning. Negative feedback hits harder and
+    lasts longer.
+  affects_problems:
+    - Task Initiation Failure (the fear component — some
+      initiation failure is driven by fear of doing it wrong,
+      not insufficient activation)
+    - Documentation Paralysis (anxiety about producing
+      inadequate work)
+  underlies_challenges:
+    - Shame-Avoidance Spiral (directly — the spiral IS
+      emotional dysregulation applied to product engagement)
+    - Disclosure Constraint (disclosure anxiety is emotional
+      dysregulation in the social domain)
+  favours_models:
+    - Passive Capture and Structured Delivery (works during
+      absence — no shame for not showing up)
+    - Ambient Monitor and Intervene (non-judgmental, graded
+      intervention)
+  disfavours_models:
+    - Structured Check-In (missed sessions trigger shame;
+      accumulated overdue items visible)
+    - Calibration Feedback Loop (revealing estimation errors
+      could trigger shame response)
+  variability: >
+    Highly variable. Stress, sleep deprivation, social context,
+    and recent experiences of rejection or criticism all
+    substantially modulate emotional reactivity.
+  evidence: [C020, C021]
+  does_not_explain: >
+    Time perception or encoding. Emotional dysregulation
+    amplifies the consequences of other deficits (missing a
+    deadline feels catastrophic, which drives avoidance) but
+    does not cause the underlying time or memory impairment.
+  evidence_note: >
+    Emotional dysregulation appears in practitioner evidence
+    (P2C) and in the shame-spiral meta-challenge data, but is
+    not directly included in the EF mediation analysis (P1C)
+    which identified self-management-to-time and self-
+    organisation as key mediators. This mechanism is supported
+    by the evidence base but less established than Time
+    Perception or Encoding Deficit.

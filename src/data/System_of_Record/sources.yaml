@@ -1,0 +1,380 @@
+# sources.yaml
+# Bibliography of original cited research and evidence.
+# Claims reference these source IDs, not our analytical documents.
+#
+# Types: clinical_study | meta_analysis | population_cohort |
+#        practitioner_study | user_evidence | market_data |
+#        consensus_statement
+#
+# Evidence tiers:
+#   Tier 1: Peer-reviewed, large sample, replicated or meta-analytic
+#   Tier 2: Peer-reviewed, smaller sample or single study
+#   Tier 3: User self-report, community data, app reviews
+
+# ═══════════════════════════════════════════════════════════════
+# CLINICAL AND POPULATION STUDIES
+# ═══════════════════════════════════════════════════════════════
+
+Fuermaier_2021:
+  name: "Fuermaier et al., 2021 — ADHD at the Workplace (WFIRS)"
+  description: >
+    German outpatient study using Weiss Functional Impairment
+    Rating Scale. n=134 ADHD adults vs matched controls and
+    general community sample. Primary source for WFIRS work
+    item prevalence data.
+  type: clinical_study
+  evidence_tier: Tier 1
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC8295111/
+  cited_in: [P1A, P1C]
+  limitations: >
+    Clinical outpatient sample — may over-represent impairment
+    vs community ADHD population. German sample — cultural
+    context may affect workplace norms.
+
+deGraaf_2008:
+  name: "de Graaf et al., 2008 — WHO World Mental Health Survey"
+  description: >
+    WHO survey of 7,075 workers across 10 countries measuring
+    productivity loss (presenteeism and absenteeism) in workers
+    with ADHD. Source of the 22.1 extra lost days figure.
+  type: population_cohort
+  evidence_tier: Tier 1
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC2665789/
+  cited_in: [P1A]
+  limitations: >
+    Self-report measure of role performance. "Lost days" are
+    estimated equivalents, not direct observation.
+
+Swedish_Population_2021:
+  name: "Swedish population cohort, 2021 — Employment outcomes"
+  description: >
+    Population register study. N=~64,000 including 9,718 ADHD,
+    48,590 controls, 5,582 siblings. Source of 10.2x disability
+    pension risk, 2.7x long-term sickness absence risk.
+  type: population_cohort
+  evidence_tier: Tier 1
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC10009402/
+  cited_in: [P1A, P1C]
+  limitations: >
+    Register-based diagnoses — captures treated ADHD, may miss
+    undiagnosed individuals. Swedish welfare system context.
+
+Barkley_Murphy_2010:
+  name: "Barkley & Murphy, 2010 — Occupational functioning in ADHD"
+  description: >
+    Structured occupational history interviews. Documented
+    higher rates of jobs quit, formal discipline, interpersonal
+    trouble, and impaired employer ratings in ADHD adults.
+    Cited by 751+ papers.
+  type: clinical_study
+  evidence_tier: Tier 1
+  url: https://academic.oup.com/acn/article/25/3/157/3840
+  cited_in: [P1A, P1C]
+  limitations: >
+    Retrospective occupational history — subject to recall bias.
+
+Adamou_2013:
+  name: "Adamou et al., 2013 — Occupational health consensus"
+  description: >
+    International occupational health consensus concluding ADHD
+    causes impairment "in all aspects related to employment."
+    Safety risk documentation.
+  type: consensus_statement
+  evidence_tier: Tier 1
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC3599848/
+  cited_in: [P1A]
+  limitations: >
+    Consensus statement — reflects expert opinion at time of
+    publication.
+
+Norwegian_Employment_Study:
+  name: "Norwegian study — Inattention and employment status"
+  description: >
+    N=149. Found inattention significantly predicted employment
+    status while hyperactivity/impulsivity, comorbidities, and
+    demographics did not. Inattention correlations r=0.40-0.60
+    with work problems.
+  type: clinical_study
+  evidence_tier: Tier 1-2
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC12128943/
+  cited_in: [P1C]
+  limitations: >
+    Smaller sample (n=149). Single-country context.
+
+# ═══════════════════════════════════════════════════════════════
+# EXECUTIVE FUNCTION AND MECHANISM STUDIES
+# ═══════════════════════════════════════════════════════════════
+
+Burnout_Mediation_2024:
+  name: "Job burnout mediation study, 2024 — EF deficit pathways"
+  description: >
+    Field study of 171 employees. Identified self-management
+    to time as the most significant executive function deficit
+    mediating the ADHD → burnout relationship.
+  type: clinical_study
+  evidence_tier: Tier 1
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC11007411/
+  cited_in: [P1C, P2C]
+  limitations: >
+    Mediation analysis — identifies pathways but the specific
+    mediators tested may not be exhaustive. Emotional regulation
+    was not included as a mediator variable.
+
+Alderson_2020:
+  name: "Alderson et al., 2020 — Working memory bifactor model"
+  description: >
+    Bifactor modelling of working memory deficits in ADHD.
+    Effect sizes d=1.63-2.03, with 75-81% of ADHD individuals
+    showing measurable impairment in central executive WM.
+  type: meta_analysis
+  evidence_tier: Tier 1
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC7483636/
+  cited_in: [P3B]
+  limitations: >
+    Meta-analytic — aggregates across studies with varying
+    methods and populations.
+
+Missonnier_2013:
+  name: "Missonnier et al., 2013 — Encoding deficit neural evidence"
+  description: >
+    First neural evidence of impaired encoding in adult ADHD.
+    Lower P3 amplitude during working memory encoding stage,
+    indicating ineffective attentional resource allocation.
+    Published in Clinical Neurophysiology.
+  type: clinical_study
+  evidence_tier: Tier 1
+  url: https://www.sciencedirect.com/science/article/abs/pii/S1388245713013485
+  cited_in: [P3B]
+  limitations: >
+    Neural study — sample size not noted in our documents.
+    Measures neural correlates, not directly workplace behaviour.
+
+Bonilla_2020:
+  name: "Bonilla et al., 2020 — WM encoding/retrieval in ADHD"
+  description: >
+    Confirmed that while binding processes are intact, attention-
+    related encoding and retrieval processes are compromised in
+    ADHD. Published in Scientific Reports.
+  type: clinical_study
+  evidence_tier: Tier 1
+  url: https://www.nature.com/articles/s41598-020-64678-x
+  cited_in: [P3B]
+  limitations: >
+    Laboratory task — ecological validity for workplace meetings
+    is inferred, not directly measured.
+
+Fuermaier_2013:
+  name: "Fuermaier et al., 2013 — Prospective memory in ADHD"
+  description: >
+    Large-scale impairment in task planning abilities. 45 ADHD
+    adults vs 45 matched controls. Published in PLOS ONE.
+  type: clinical_study
+  evidence_tier: Tier 1
+  url: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0058338
+  cited_in: [P3B]
+  limitations: >
+    Relatively small sample (n=90 total).
+
+Fuermaier_2016:
+  name: "Fuermaier et al., 2016 — Methylphenidate effects on memory"
+  description: >
+    Found medication improves memory but leaves considerable
+    impairments vs normal functioning. Large deficits persist
+    in story recall and prospective memory even when treated.
+  type: clinical_study
+  evidence_tier: Tier 1
+  url: https://www.tandfonline.com/doi/full/10.1080/23279095.2015.1124108
+  cited_in: [P3B, S10]
+  limitations: >
+    Single medication (methylphenidate). Other medications may
+    show different effects.
+
+# ═══════════════════════════════════════════════════════════════
+# INTERVENTION AND TREATMENT EVIDENCE
+# ═══════════════════════════════════════════════════════════════
+
+Lauder_2024:
+  name: "Lauder et al., 2024 — Meta-analysis of workplace interventions"
+  description: >
+    Meta-analysis comparing pharmacological (d=0.19) and
+    psychosocial (d=0.56) interventions on work-relevant
+    outcomes for adults with ADHD. Psychosocial interventions
+    showed significantly larger effects.
+  type: meta_analysis
+  evidence_tier: Tier 1
+  url: https://journals.sagepub.com/doi/10.1177/27546330241292984
+  cited_in: [P2C]
+  limitations: >
+    Meta-analytic — pooled effect sizes may mask heterogeneity.
+    Work-relevant outcomes defined broadly.
+
+WorkMAP_RCT:
+  name: "Grinblat & Rosenblum, 2023 — Work-MAP telehealth RCT"
+  description: >
+    Randomised controlled trial of telehealth metacognitive
+    intervention for adults with ADHD. 11 weekly sessions.
+    15-19% of participants improved EF scores from abnormal to
+    normal range, sustained at 3-month follow-up.
+  type: clinical_study
+  evidence_tier: Tier 1
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC10336612/
+  cited_in: [P2C]
+  limitations: >
+    Structured therapeutic programme with clinician — not
+    directly comparable to software-delivered intervention.
+
+Medication_Adherence_2024:
+  name: "Medication adherence observational study (n=4,011)"
+  description: >
+    Found average medication adherence of 56%, with only 27.5%
+    meeting the 80% coverage threshold for therapeutic benefit.
+  type: clinical_study
+  evidence_tier: Tier 1
+  url: "Pubmed: 40357727"
+  cited_in: [Meta_Challenges]
+  limitations: >
+    Single observational study. Adherence patterns may vary
+    by medication type and healthcare system.
+
+Medication_Discontinuation_2024:
+  name: "Karolinska Institutet, 2024 — Multinational discontinuation"
+  description: >
+    Multinational study of 1.2M patients across 9 countries.
+    Found 50-70% of adolescents and adults discontinue ADHD
+    medication within the first year.
+  type: population_cohort
+  evidence_tier: Tier 1
+  url: "Karolinska Institutet, 2024"
+  cited_in: [Meta_Challenges]
+  limitations: >
+    Register-based data. Reasons for discontinuation not
+    captured.
+
+Digital_Intervention_Dropout:
+  name: "Pettersson et al., 2017 / Nordby et al., 2022 — Digital intervention dropout"
+  description: >
+    77% of ADHD adults did not complete self-guided digital
+    interventions. In broader self-guided interventions, >90%
+    drop out after 2 modules in open-distribution versions.
+    Cited in Frontiers in Digital Health.
+  type: meta_analysis
+  evidence_tier: Tier 1-2
+  url: "Nordby et al. 2022, Frontiers in Digital Health"
+  cited_in: [Meta_Challenges]
+  limitations: >
+    Self-guided only — coached digital interventions may have
+    better completion. The >90% figure is for depression
+    interventions, not ADHD-specific.
+
+# ═══════════════════════════════════════════════════════════════
+# USER AND COMMUNITY EVIDENCE
+# ═══════════════════════════════════════════════════════════════
+
+P2A_Community_Reports:
+  name: "ADHD community self-reports (Reddit, ADDitude, forums)"
+  description: >
+    User-reported workplace struggles from r/ADHD, r/ADHD_
+    Programmers, ADDitude Magazine surveys, and ADHD community
+    forums. Source of qualitative descriptions like "invisible
+    barrier," "app graveyard," and "out of sight, out of mind."
+  type: user_evidence
+  evidence_tier: Tier 3
+  url: "Multiple community sources"
+  cited_in: [P2A, P2B]
+  limitations: >
+    Self-selected. No diagnosis verification. Recall bias.
+    Frustration likely over-represented. Not generalisable
+    to the ADHD population as a whole.
+
+ADDitude_Poll:
+  name: "ADDitude Magazine workplace challenges poll (n=~1,000)"
+  description: >
+    Survey of ~1,000 ADHD adults on biggest work challenges.
+    29.27% cited focusing consistently as #1, 21.86% cited
+    prioritisation.
+  type: user_evidence
+  evidence_tier: Tier 3
+  url: "ADDitude Magazine"
+  cited_in: [P2A]
+  limitations: >
+    Self-selected readership. Likely skews toward diagnosed,
+    treatment-seeking adults.
+
+ADHD_Coaching_Survey:
+  name: "ADHD coaching workforce survey"
+  description: >
+    Found 72.7% of ADHD coaches self-identify as having or
+    suspecting ADHD. 60.9% began practicing during/after COVID.
+    98.9% use lived experience to inform services.
+  type: practitioner_study
+  evidence_tier: Tier 2
+  url: "Cited in P2C"
+  cited_in: [P2C]
+  limitations: >
+    Self-report from practitioners. Coach qualifications and
+    methodologies vary widely.
+
+# ═══════════════════════════════════════════════════════════════
+# OUR ANALYTICAL DOCUMENTS
+# These are the intermediate analysis layer, not primary evidence.
+# Included here so that claims can reference them where an
+# assertion originates from our analysis rather than a cited study.
+# ═══════════════════════════════════════════════════════════════
+
+Our_S3:
+  name: "Project 1 — Problem Layer Scoring (S3)"
+  description: >
+    Our scoring of 13 functional problems on frequency,
+    differentiation, and connectedness. The scoring framework
+    is our analytical construction.
+  type: analytical_output
+  evidence_tier: Derived
+  limitations: >
+    Scores are our interpretation, not validated instrument.
+
+Our_S4:
+  name: "Project 1 — Problem Clusters (S4)"
+  description: >
+    Our cluster analysis grouping problems by co-occurrence.
+    Interpretive groupings, not statistically derived.
+  type: analytical_output
+  evidence_tier: Derived
+  limitations: >
+    Clusters are inferred from shared mechanisms and
+    practitioner reports, not longitudinal data.
+
+Our_L2:
+  name: "Project 2 — Engagement Models (L2)"
+  description: >
+    Our eight engagement model taxonomy characterised across
+    four dimensions. Extracted from proposed solutions, not
+    observed products.
+  type: analytical_output
+  evidence_tier: Derived
+  limitations: >
+    Retention profiles hypothesised. Models extracted from
+    designs, not shipped products.
+
+Our_Meta_Challenges:
+  name: "Project 2 — Meta-Challenges"
+  description: >
+    Our five structural challenges framework (MC1-MC5). The
+    grouping is our construction; individual challenges are
+    well-evidenced.
+  type: analytical_output
+  evidence_tier: Derived
+  limitations: >
+    The five challenges are our categorisation. Other structural
+    challenges may exist that we haven't identified.
+
+Our_Cross_Layer:
+  name: "Project 2 — Cross-Layer Mapping"
+  description: >
+    Our compatibility matrix (S/P/X ratings) mapping problems
+    to engagement models with meta-challenge overlays.
+  type: analytical_output
+  evidence_tier: Derived
+  limitations: >
+    Ratings are interpretive. Build/Buy recommendations in
+    the source document contain technology assertions that
+    we have excluded.

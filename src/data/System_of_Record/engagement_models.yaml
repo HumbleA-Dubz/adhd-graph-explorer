@@ -1,0 +1,264 @@
+# engagement_models.yaml
+# Structurally distinct ways a product could engage ADHD users.
+# Describes the relationship between user and product: when
+# interaction occurs, who initiates, what effort the user
+# expends, and what the product does without user input.
+#
+# Dimensions:
+#   A: Initiation — User-initiated <---> Product-initiated
+#   B: Effort — High effort <---> Zero effort
+#   C: Timing — Before / During / After problem
+#   D: Continuity — Separate surface <---> Embedded in existing tools
+
+Ambient Monitor and Intervene:
+  id: M1
+  plain_language: >
+    The product watches your work in the background. When it
+    detects you're stuck — stalling, switching tabs, overrunning
+    time — it intervenes. You don't ask for help; it notices
+    and acts. Intervention is graded: lightest touch first,
+    escalating only if the problem persists.
+  dimensions:
+    initiation: Strongly product-initiated
+    effort: Near-zero
+    timing: During problem
+    continuity: Embedded (desktop agent or browser extension)
+  retention_risk: >
+    Does not depend on habit formation. Risk is nudge fatigue —
+    if interventions become ignorable, the tool degrades into
+    another notification to dismiss.
+  habit_burden: Minimal
+  primary_problems:
+    - Task Initiation Failure (FP01)
+  secondary_problems:
+    - Inconsistent Focus (FP02)
+    - Time Estimation and Time Blindness (FP03)
+  meta_challenge_vulnerability:
+    MC1_novelty_decay: Moderate — interventions may habituate
+    MC2_circular_dependency: Low — always-on, no initiation needed
+    MC3_shame_spiral: Low — no visible failure accumulation
+    MC4_disclosure: Moderate — desktop agent visible in taskbar
+    MC5_notification: High — depends on notifications landing
+  claims: [C011, C027]
+  derived_from: Our_L2
+
+Passive Capture and Structured Delivery:
+  id: M2
+  plain_language: >
+    The product automatically captures information from your
+    meetings, emails, and chats — information you'd otherwise
+    forget. You change nothing about how you work. It processes
+    what it captures and delivers structured summaries and
+    extracted commitments at the moment you need them.
+  dimensions:
+    initiation: Strongly product-initiated
+    effort: Zero
+    timing: After problem (captures during, delivers later)
+    continuity: Embedded (meeting platform, email client)
+  retention_risk: >
+    Strongest retention of any model. Value compounds over time
+    as the knowledge graph grows. Does not depend on habit
+    formation — scored 5/5 on behavioural change. The only
+    architecture where "app graveyard" may be structurally
+    mitigated.
+  habit_burden: None
+  primary_problems:
+    - Meeting and Instruction Memory Failure (FP07)
+    - Email and Communication Management Failure (FP09)
+  secondary_problems: []
+  meta_challenge_vulnerability:
+    MC1_novelty_decay: Low — compounding value creates switching cost
+    MC2_circular_dependency: Low — zero user initiation required
+    MC3_shame_spiral: Low — continues working during absence
+    MC4_disclosure: Moderate — meeting bot may be visible
+    MC5_notification: Low — value delivery, not interruption
+  claims: [C014, C015, C017, C018, C028]
+  derived_from: Our_L2
+
+Modality Shift:
+  id: M3
+  plain_language: >
+    Changes the input channel from writing (high activation
+    barrier) to speaking (low barrier). You talk through your
+    work; the product transforms it into professional output.
+    Same cognitive work, different channel. Addresses the blank
+    page problem directly.
+  dimensions:
+    initiation: User-initiated (optionally product-prompted)
+    effort: Moderate
+    timing: During problem
+    continuity: Separate surface (mostly standalone)
+  retention_risk: >
+    Moderate. Per-use value — each use is independent, no
+    compounding. Risk is that editing AI output re-triggers the
+    same paralysis the tool was meant to avoid.
+  habit_burden: Moderate
+  primary_problems:
+    - Documentation and Administrative Paralysis (FP11)
+  secondary_problems: []
+  meta_challenge_vulnerability:
+    MC1_novelty_decay: Moderate — per-use tool, no habituation loop
+    MC2_circular_dependency: Moderate — user must remember it exists
+    MC3_shame_spiral: Low — no state to accumulate failure
+    MC4_disclosure: Low — voice input is commonplace
+    MC5_notification: Low — not notification-dependent
+  claims: []
+  derived_from: Our_L2
+
+Intelligent Reordering and Decision Reduction:
+  id: M4
+  plain_language: >
+    Sits on top of your existing task system and decides what
+    to show you based on what you're likely to actually do
+    right now — not just what's "important." Reduces your
+    decision from "pick from 50 items" to "do this one thing."
+    Bridges the gap between neurologically accessible and
+    genuinely important.
+  dimensions:
+    initiation: Balanced — user opens, product decides what to show
+    effort: Low
+    timing: Before problem
+    continuity: Embedded (layer on existing task tool)
+  retention_risk: >
+    Moderate to good. Algorithm improves with use, creating
+    mild switching cost. Risk is "out of sight, out of mind" —
+    user must open or check the tool. Mitigated by pushing
+    top task via notification.
+  habit_burden: Low
+  primary_problems:
+    - Prioritisation Failure (FP05)
+  secondary_problems:
+    - Task Initiation Failure (FP01)
+  meta_challenge_vulnerability:
+    MC1_novelty_decay: Moderate — algorithm learning creates some stickiness
+    MC2_circular_dependency: Moderate — user must open the tool
+    MC3_shame_spiral: Moderate — task list can accumulate
+    MC4_disclosure: Low — appears as general productivity layer
+    MC5_notification: Moderate — depends on push if used
+  claims: [C012, C013]
+  derived_from: Our_L2
+
+Calibration Feedback Loop:
+  id: M5
+  plain_language: >
+    Collects data on how long things actually take versus your
+    estimates, then feeds back the discrepancy. Holds up a
+    mirror that the ADHD brain cannot hold for itself. Over
+    time, calibrates your internal model against reality.
+  dimensions:
+    initiation: Balanced — user estimates, product feeds back
+    effort: Moderate
+    timing: Before and during problem
+    continuity: Partially embedded (calendar integration + own surface)
+  retention_risk: >
+    Compounding value as calibration data accumulates. But
+    breaks entirely if the user stops estimating — the loop
+    depends on a micro-habit. Cold start problem is real.
+  habit_burden: Moderate
+  primary_problems:
+    - Time Estimation and Time Blindness (FP03)
+  secondary_problems: []
+  meta_challenge_vulnerability:
+    MC1_novelty_decay: Moderate — value compounds but requires active use
+    MC2_circular_dependency: High — user must estimate to get value
+    MC3_shame_spiral: High — calibration data shows failures
+    MC4_disclosure: Low — looks like a productivity timer
+    MC5_notification: Moderate — overrun alerts may habituate
+  claims: [C008, C009]
+  derived_from: Our_L2
+
+Periodic Injection into Existing Workflow:
+  id: M6
+  plain_language: >
+    Monitors your long-term projects for engagement decay.
+    When a project is being neglected, injects small concrete
+    tasks into your existing daily workflow. You don't go to
+    the product — it comes to you with a 15-minute action that
+    bridges present you and the neglected obligation.
+  dimensions:
+    initiation: Strongly product-initiated
+    effort: Low per interaction
+    timing: Before problem (preventive)
+    continuity: Embedded (injects into existing task flow)
+  retention_risk: >
+    Does not depend on habit formation. Risk is quality of
+    injected tasks — if generic ("check on Project X"), the
+    tool becomes another ignored reminder. Must be specific
+    and genuinely useful.
+  habit_burden: Minimal
+  primary_problems:
+    - Long-Term Project Neglect (FP08)
+  secondary_problems: []
+  meta_challenge_vulnerability:
+    MC1_novelty_decay: Moderate — injected tasks may habituate
+    MC2_circular_dependency: Low — product pushes to user
+    MC3_shame_spiral: Low — tasks appear fresh, not as backlog
+    MC4_disclosure: Low — tasks appear in existing tool
+    MC5_notification: Moderate — depends on task notifications
+  claims: [C013]
+  derived_from: Our_L2
+
+Structured Check-In and Guided Routine:
+  id: M7
+  plain_language: >
+    Walks you through a daily planning ritual: review
+    commitments, estimate durations, pick priorities, reflect
+    at end of day. The structure is external — the product
+    provides scaffolding that the ADHD brain cannot generate.
+    Mirrors the coaching model. The paradox: most recommended
+    by practitioners, most abandoned by users.
+  dimensions:
+    initiation: Product-prompted, user-executed
+    effort: Moderate
+    timing: Before problem (preventive planning)
+    continuity: Separate surface (dedicated check-in view)
+  retention_risk: >
+    Highest risk of any model. Critically dependent on habit
+    formation. If the user misses a few days, overdue items
+    accumulate and trigger the shame spiral. The "app graveyard"
+    is largely a Structured Check-In graveyard.
+  habit_burden: Highest
+  primary_problems:
+    - Task Initiation Failure (FP01)
+    - Time Estimation and Time Blindness (FP03)
+    - Prioritisation Failure (FP05)
+  secondary_problems: []
+  meta_challenge_vulnerability:
+    MC1_novelty_decay: Very high — fixed routine habituates
+    MC2_circular_dependency: Very high — user must show up
+    MC3_shame_spiral: Very high — missed days accumulate visibly
+    MC4_disclosure: Moderate — ADHD-branded planners are visible
+    MC5_notification: High — depends on check-in reminders
+  claims: [C029, C030, C031]
+  derived_from: Our_L2
+
+On-Demand Cognitive Scaffolding:
+  id: M8
+  plain_language: >
+    Available when you're stuck. You bring a complex task; it
+    breaks it into micro-steps, drafts a starting point, or
+    generates a decision framework. The executive function
+    support your brain cannot provide at that moment, on demand.
+  dimensions:
+    initiation: User-initiated
+    effort: Low to moderate
+    timing: During problem
+    continuity: Either separate or embedded
+  retention_risk: >
+    Moderate. Episodic use — no degradation without use but
+    no compounding either. Risk is the user forgetting the
+    tool exists when stuck, which is precisely the "out of
+    sight, out of mind" problem.
+  habit_burden: Low
+  primary_problems:
+    - Task Initiation Failure (FP01)
+    - Documentation and Administrative Paralysis (FP11)
+  secondary_problems: []
+  meta_challenge_vulnerability:
+    MC1_novelty_decay: Low — per-use, no routine to decay
+    MC2_circular_dependency: High — user must self-identify stuck state
+    MC3_shame_spiral: Low — no state, no failure accumulation
+    MC4_disclosure: Low — looks like any AI assistant
+    MC5_notification: Low — not notification-dependent
+  claims: [C011]
+  derived_from: Our_L2

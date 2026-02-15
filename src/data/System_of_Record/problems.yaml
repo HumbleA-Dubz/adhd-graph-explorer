@@ -1,0 +1,285 @@
+# problems.yaml
+# Functional workplace problems experienced by adults with ADHD.
+# Scored on Frequency (Q1), ADHD Differentiation (Q2), and
+# Connectedness (Q3). Derived from S3 Problem Scoring.
+#
+# Each problem links to the mechanism(s) that explain it and
+# the claim(s) that evidence it.
+
+# ═══════════════════════════════════════════════════════════════
+# CLUSTER A: TIME-PERCEPTION CASCADE
+# Hub: FP03. Downstream: FP04, FP12, FP08 (partial)
+# ═══════════════════════════════════════════════════════════════
+
+Time Estimation and Time Blindness:
+  id: FP03
+  plain_language: >
+    Cannot perceive how much time has passed or accurately
+    estimate how long things will take. Loses hours without
+    noticing. Plans that assume a working sense of time fail
+    consistently.
+  scores:
+    frequency: 4      # Daily
+    differentiation: 5 # Neurologically distinct
+    connectedness: 5   # Hub — affects 5+ other problems
+    total: 14
+  evidence_tier: 1.3
+  mechanisms: [Time Perception Distortion]
+  cluster: A — Time-Perception Cascade
+  role: hub
+  claims: [C008, C009, C010]
+  derived_from: Our_S3
+
+Deadline Misses:
+  id: FP04
+  plain_language: >
+    Consistently fails to deliver work by agreed deadlines.
+    Not from lack of effort but from misjudged time, focus
+    lapses, and accumulated delays from upstream problems.
+  scores:
+    frequency: 4
+    differentiation: 3
+    connectedness: 3
+    total: 10
+  evidence_tier: 1.0
+  mechanisms: [Time Perception Distortion, Attention Allocation Dysfunction]
+  cluster: A and C (convergence point)
+  role: receiver
+  claims: [C002, C003]
+  derived_from: Our_S3
+
+Chronic Lateness:
+  id: FP12
+  plain_language: >
+    Persistently late to work, meetings, and commitments
+    despite consequences, warnings, and genuine effort. Driven
+    by inability to perceive preparation time accurately.
+  scores:
+    frequency: 4
+    differentiation: 4
+    connectedness: 2
+    total: 10
+  evidence_tier: 1.0
+  mechanisms: [Time Perception Distortion]
+  cluster: A — Time-Perception Cascade
+  role: receiver
+  claims: [C008]
+  derived_from: Our_S3
+
+# ═══════════════════════════════════════════════════════════════
+# CLUSTER B: INITIATION-EXECUTION BOTTLENECK
+# Hub: FP01. Downstream: FP08, FP11
+# ═══════════════════════════════════════════════════════════════
+
+Task Initiation Failure:
+  id: FP01
+  plain_language: >
+    Knows exactly what to do but cannot start. An "invisible
+    barrier" that effort alone cannot overcome. Qualitatively
+    different from procrastination — not avoidance of unpleasant
+    work, but a neurological gate that blocks action regardless
+    of intent.
+  scores:
+    frequency: 5      # Multiple times per day
+    differentiation: 5 # Qualitatively distinct mechanism
+    connectedness: 4   # Cluster centre
+    total: 14
+  evidence_tier: 1.7
+  mechanisms: [Reward and Activation Processing]
+  cluster: B — Initiation-Execution Bottleneck
+  role: hub
+  claims: [C011, C012]
+  derived_from: Our_S3
+
+Documentation and Administrative Paralysis:
+  id: FP11
+  plain_language: >
+    Complete inability to start documentation tasks — timesheets,
+    reports, meeting notes, evaluations. Low-stimulation plus
+    high-effort creates the maximum initiation barrier. "Nothing
+    makes it NOT paperwork."
+  scores:
+    frequency: 4
+    differentiation: 4
+    connectedness: 2
+    total: 10
+  evidence_tier: 3.0
+  mechanisms: [Reward and Activation Processing]
+  cluster: B — Initiation-Execution Bottleneck
+  role: receiver
+  claims: [C011]
+  derived_from: Our_S3
+
+# ═══════════════════════════════════════════════════════════════
+# CLUSTER C: ATTENTION-QUALITY CHAIN
+# Hub: FP02. Downstream: FP06, FP04 (shared)
+# ═══════════════════════════════════════════════════════════════
+
+Inconsistent Focus:
+  id: FP02
+  plain_language: >
+    Unpredictable oscillation between near-zero productivity
+    and hyperfocus. Not uniformly poor attention — the
+    variability itself is the problem. What works Monday may
+    fail Tuesday. Standard focus tools assume a consistent
+    baseline that does not exist.
+  scores:
+    frequency: 5
+    differentiation: 4
+    connectedness: 4
+    total: 13
+  evidence_tier: 1.0
+  mechanisms: [Attention Allocation Dysfunction, Reward and Activation Processing]
+  cluster: C — Attention-Quality Chain
+  role: hub
+  claims: [C001, C002, C006, C007]
+  derived_from: Our_S3
+
+Attention-to-Detail Errors:
+  id: FP06
+  plain_language: >
+    Persistent errors of oversight that survive repeated
+    self-checking. Forgetting files, leaving debug code,
+    sending incomplete work. The errors are identical to
+    neurotypical mistakes but far more frequent and resistant
+    to quality processes.
+  scores:
+    frequency: 4
+    differentiation: 3
+    connectedness: 3
+    total: 10
+  evidence_tier: 1.0
+  mechanisms: [Attention Allocation Dysfunction]
+  cluster: C — Attention-Quality Chain
+  role: receiver
+  claims: [C006]
+  derived_from: Our_S3
+
+# ═══════════════════════════════════════════════════════════════
+# CROSS-CLUSTER AMPLIFIER
+# ═══════════════════════════════════════════════════════════════
+
+Prioritisation Failure:
+  id: FP05
+  plain_language: >
+    Cannot use importance as a prioritisation criterion.
+    Responds to interest, novelty, and urgency instead.
+    "Procrastivity" — doing interesting low-priority tasks
+    while important tasks stagnate.
+  scores:
+    frequency: 5
+    differentiation: 4
+    connectedness: 4
+    total: 13
+  evidence_tier: 1.7
+  mechanisms: [Reward and Activation Processing, Attention Allocation Dysfunction]
+  cluster: Cross-cluster amplifier
+  role: amplifier
+  claims: [C012, C013]
+  derived_from: Our_S3
+
+# ═══════════════════════════════════════════════════════════════
+# CROSS-CLUSTER RECEIVER
+# Receives pressure from both Cluster A and Cluster B
+# ═══════════════════════════════════════════════════════════════
+
+Long-Term Project Neglect:
+  id: FP08
+  plain_language: >
+    Strategic projects are abandoned or starved while daily
+    operational work gets done. Driven by delay discounting
+    (distant deadlines create zero urgency) and initiation
+    failure (low-stimulation strategic work is hardest to
+    start).
+  scores:
+    frequency: 4
+    differentiation: 5
+    connectedness: 3
+    total: 12
+  evidence_tier: 1.7
+  mechanisms: [Reward and Activation Processing, Time Perception Distortion]
+  cluster: A and B (receives from both)
+  role: receiver
+  claims: [C013]
+  derived_from: Our_S3
+
+# ═══════════════════════════════════════════════════════════════
+# STANDALONE PROBLEMS
+# Did not cluster with A, B, or C
+# ═══════════════════════════════════════════════════════════════
+
+Meeting and Instruction Memory Failure:
+  id: FP07
+  plain_language: >
+    Understands everything during a meeting but cannot recall
+    it afterward. Not an attention problem — an encoding problem.
+    Information is processed in real time but never reaches
+    long-term storage. Standard note-taking creates a dual-task
+    problem that worsens it.
+  scores:
+    frequency: 4
+    differentiation: 5   # Raised from 4 after P3B deep dive
+    connectedness: 2
+    total: 11             # Revised upward
+  evidence_tier: 1.7
+  mechanisms: [Encoding Deficit]
+  cluster: Standalone
+  role: standalone
+  claims: [C014, C015, C016]
+  derived_from: Our_S3
+
+Email and Communication Management Failure:
+  id: FP09
+  plain_language: >
+    Reads emails, forms intention to reply, then the intention
+    vanishes. Not inbox overwhelm — prospective memory failure.
+    The "read and forgot" pattern. Standard email tools address
+    volume and speed; none address forgotten reply intentions.
+  scores:
+    frequency: 4
+    differentiation: 4
+    connectedness: 3      # Raised from 2 after P3A deep dive
+    total: 11             # Revised upward
+  evidence_tier: 1.7
+  mechanisms: [Prospective Memory Failure, Emotional Dysregulation]
+  cluster: Standalone
+  role: standalone
+  claims: [C017, C018, C019]
+  derived_from: Our_S3
+
+Context Switching Cost:
+  id: FP10
+  plain_language: >
+    Recovery from interruptions takes 30+ minutes. Not just
+    losing focus — losing the entire mental context that was
+    built up during focused work. An environmental/workload
+    interaction more than a core EF failure.
+  scores:
+    frequency: 4
+    differentiation: 3
+    connectedness: 2
+    total: 9
+  evidence_tier: 3.3
+  mechanisms: [Attention Allocation Dysfunction]
+  cluster: Standalone
+  role: standalone
+  claims: [C021]
+  derived_from: Our_S3
+
+Workspace Disorganisation:
+  id: FP18
+  plain_language: >
+    Cannot maintain organisation systems after initial setup.
+    Desks, files, folders decay to disorder within days. The
+    problem is sustained maintenance, not the initial sort.
+  scores:
+    frequency: 3
+    differentiation: 3
+    connectedness: 2
+    total: 8
+  evidence_tier: 2.0
+  mechanisms: [Attention Allocation Dysfunction]
+  cluster: Standalone
+  role: standalone
+  claims: [C001]
+  derived_from: Our_S3

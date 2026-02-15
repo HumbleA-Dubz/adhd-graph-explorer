@@ -1,0 +1,250 @@
+# implications.yaml
+# The "so what" layer. Constraints, tradeoffs, and structural
+# observations that emerge from the evidence. These describe
+# the shape of the decision space — what's possible, what's
+# constrained, and where the tensions are.
+#
+# Implications are NOT recommendations. They encode facts about
+# the design space that any decision must account for.
+
+# ═══════════════════════════════════════════════════════════════
+# STRUCTURAL CONSTRAINTS
+# Things that are true regardless of product direction
+# ═══════════════════════════════════════════════════════════════
+
+IMP01:
+  name: No single model covers the full problem space
+  type: structural_constraint
+  statement: >
+    No engagement model is "strongly compatible" with all six
+    problem areas. Any product addressing the full problem space
+    requires combining multiple engagement models. A single-
+    model product will likely leave gaps in coverage.
+  evidence: [C032]
+  derived_from: compatibility.yaml
+  affects:
+    - Product architecture decisions
+    - Scope and sequencing decisions
+
+IMP02:
+  name: Product-initiated models are structurally advantaged
+  type: structural_constraint
+  statement: >
+    Models where the product comes to the user (M1, M2, M6)
+    are consistently less vulnerable to bootstrapping (MC2)
+    and notification desensitisation (MC5) than models requiring
+    user initiation (M3, M5, M7, M8). In our analysis, this
+    appears to be a structural characteristic rather than a
+    design detail — it may not be easily mitigated by UX
+    improvements on user-initiated models.
+  evidence: [C019, C022, C025, C027]
+  derived_from: compatibility.yaml (meta-challenge matrix)
+  affects:
+    - Engagement model prioritisation
+    - Architecture decisions (push vs pull)
+
+IMP03:
+  name: Compounding value creates retention
+  type: structural_constraint
+  statement: >
+    Models that become more valuable over time (M2's knowledge
+    graph, M5's calibration data, M4's pattern learning) are
+    more resistant to novelty decay (MC1) than models delivering
+    fixed-value interactions (M7's check-in, M3's recording).
+    Compounding value may create switching cost that counteracts
+    the tendency toward disengagement.
+  evidence: [C022, C024, C028]
+  derived_from: compatibility.yaml (meta-challenge matrix)
+  affects:
+    - Retention strategy
+    - Build sequencing (compound-value components first)
+
+IMP04:
+  name: Background operation resolves shame and disclosure simultaneously
+  type: structural_constraint
+  statement: >
+    Models that operate in the background (M1, M2, M6) are
+    simultaneously resistant to shame (nothing to fall behind
+    on) and disclosure (nothing visible to colleagues).
+    Foreground models (M3, M5, M7) generate both shame
+    artefacts and workplace visibility. This suggests both
+    constraints may be addressable through a single architectural
+    choice.
+  evidence: [C020, C022, C026]
+  derived_from: compatibility.yaml (meta-challenge matrix)
+  affects:
+    - Architecture decisions (background vs foreground)
+    - Enterprise and workplace deployment strategy
+
+IMP05:
+  name: The push-pull tension may not have a clean resolution
+  type: structural_constraint
+  statement: >
+    Push-based delivery mitigates bootstrapping (MC2) but
+    creates notification desensitisation vulnerability (MC5).
+    Pull-based delivery avoids MC5 but creates MC2 vulnerability.
+    One potential resolution identified in our analysis is
+    embedding in existing workflows
+    rather than using either push or pull as primary delivery —
+    the "ambient presence" pattern (M2, M6).
+  evidence: [C019, C025]
+  derived_from: compatibility.yaml (meta-challenge matrix)
+  affects:
+    - Notification and delivery architecture
+    - Integration strategy
+
+# ═══════════════════════════════════════════════════════════════
+# PARADOXES AND TENSIONS
+# Things that pull in opposite directions
+# ═══════════════════════════════════════════════════════════════
+
+IMP06:
+  name: The practitioner-product paradox
+  type: paradox
+  statement: >
+    Structured Check-In (M7) has strong practitioner endorsement alongside the weakest
+    meta-challenge profile in our analysis.
+    Practitioners provide external accountability that makes
+    check-ins work — the practitioner IS the bootstrapping
+    mechanism, the shame regulator, and the novelty source.
+    These functions may be difficult to replicate in software
+    alone. M7 may be most effective when combined with human
+    elements (coaching, community)
+    or layered on a passive foundation that handles the meta-
+    challenges.
+  evidence: [C029, C030, C031]
+  derived_from: compatibility.yaml, engagement_models.yaml
+  affects:
+    - Whether to include structured check-in at all
+    - Human-in-loop vs pure software decisions
+
+IMP07:
+  name: Strongest evidence matches narrowest applicability
+  type: tension
+  statement: >
+    Passive Capture (M2) shows fewer high vulnerabilities in our analysis
+    and strong clinical evidence (Tier 1 encoding/PM data),
+    but is strongly compatible with only 2 of 6 problem areas
+    (FP07, FP09). The broadest model (M1 Ambient Monitor) has
+    weaker evidence and high privacy requirements.
+    In our analysis, the models with stronger evidence tend to
+    address fewer problem areas.
+  evidence: [C014, C015, C017, C028]
+  derived_from: compatibility.yaml
+  affects:
+    - Product scope decisions
+    - Evidence-based vs coverage-based prioritisation
+
+IMP08:
+  name: The medication baseline
+  type: tension
+  statement: >
+    If 56% medication adherence and 50-70% first-year
+    discontinuation are the baseline for the gold-standard
+    intervention, digital tools may face similar or worse retention
+    challenges. Any retention claim for a digital product that
+    assumes better retention than medication needs strong
+    justification. This reframes "how do we achieve retention"
+    as "how do we deliver value assuming poor retention."
+  evidence: [C024, C025]
+  derived_from: meta_challenges.yaml (MC1)
+  affects:
+    - Retention strategy
+    - Value delivery architecture (front-load vs compound)
+
+# ═══════════════════════════════════════════════════════════════
+# DECISION SPACE BOUNDARIES
+# What the evidence says is and isn't viable
+# ═══════════════════════════════════════════════════════════════
+
+IMP09:
+  name: Seven foundations are direction-independent
+  type: decision_boundary
+  statement: >
+    Seven shared capabilities appear across 3+ engagement models
+    and appear needed regardless of product direction: calendar
+    integration, task tool integration, non-shaming tone
+    framework, variability engine, on-device processing, MCP
+    backbone, and knowledge graph. Whether to develop these
+    before direction is finalised is a sequencing decision
+    the team can assess.
+  evidence: []
+  derived_from: foundations.yaml
+  affects:
+    - Build sequencing
+    - Resource allocation
+    - "What to build now" decisions
+
+IMP10:
+  name: Meeting memory and email have a favourable risk profile in our analysis
+  type: decision_boundary
+  statement: >
+    FP07 (meeting memory) and FP09 (email) have the strongest
+    clinical evidence (Tier 1), no ADHD-specific tools identified in our research, an
+    engagement model with no high vulnerabilities in our
+    analysis (M2), and minimal user behaviour requirements
+    (passive capture). If risk minimisation is a priority, this
+    cluster appears favourable in our analysis. The tradeoff
+    is narrow applicability — only 2 of 13 problems are
+    addressed.
+  evidence: [C014, C015, C017, C018, C028]
+  derived_from: compatibility.yaml, engagement_models.yaml
+  affects:
+    - Product scope decisions
+    - MVP definition
+
+IMP11:
+  name: Task initiation combines high demand with high complexity
+  type: decision_boundary
+  statement: >
+    FP01 (task initiation) scores highest on frequency (5/5)
+    and is among the most-discussed problems in our sources.
+    But the most compatible model (M1 Ambient Monitor) has high
+    privacy requirements, significant build complexity, and an
+    unresolved "stuck vs thinking" detection problem. High
+    demand, high risk. The alternative path through M4
+    (Intelligent Reordering) is lower-risk but addresses
+    initiation only partially.
+  evidence: [C011, C012, C027]
+  derived_from: compatibility.yaml, problems.yaml
+  affects:
+    - Product scope decisions
+    - Technical risk assessment
+
+IMP12:
+  name: ADHD heterogeneity limits universal claims
+  type: decision_boundary
+  statement: >
+    ADHD is heterogeneous. Engagement patterns, problem
+    severity, and intervention response vary by subtype
+    (inattentive, hyperactive/impulsive, combined), comorbidity
+    profile, medication status, and job type. The research does
+    not differentiate by these factors. All claims in this
+    system are averages across a heterogeneous population.
+    Any product must account for this variability or narrow
+    its target.
+  evidence: [C033, C035]
+  derived_from: claims.yaml (caveats)
+  affects:
+    - Target user definition
+    - Personalisation requirements
+    - Confidence in universal claims
+
+IMP13:
+  name: Retention predictions are untested
+  type: decision_boundary
+  statement: >
+    Engagement model retention profiles are hypothesised from
+    structural characteristics, not observed in longitudinal
+    data. The only empirically supported retention finding in
+    our reviewed literature is negative: Structured Check-In
+    models are abandoned. Positive
+    retention claims for other models (especially M2's
+    "strongest retention") are structural inferences that need
+    testing.
+  evidence: [C034]
+  derived_from: claims.yaml (caveats)
+  affects:
+    - Confidence in retention claims
+    - Test design priorities
+    - What to validate first

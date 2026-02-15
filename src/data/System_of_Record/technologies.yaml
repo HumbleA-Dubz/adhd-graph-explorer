@@ -1,0 +1,856 @@
+# technologies.yaml
+# Technology landscape relevant to AI-powered workplace tools for
+# ADHD adults. Entries document what approaches exist in each area,
+# regardless of product direction.
+#
+# Coverage: ALL capability areas, not just uncertain ones. Even
+# commodity areas get entries so the team can see options when
+# constructing a solution.
+#
+# What varies is research depth, not coverage:
+#   very_low/low uncertainty  → brief, from general knowledge
+#   moderate uncertainty      → approaches + tradeoffs from targeted research
+#   high uncertainty          → deep research with evidenced findings
+#
+# Scores (tell the team where investigation effort is needed):
+#   technology_stake:            low | moderate | high | very_high
+#     How much this constrains or enables other architectural decisions
+#   remaining_uncertainty:       very_low | low | moderate | high
+#     How much we don't know about approach viability
+#   investigation_accessibility: trivial | easy | moderate | hard
+#     How easy/cheap it is to reduce the uncertainty
+#
+# The approaches block is FROM RESEARCH. Everything else is derived,
+# mapped, or compiled. Research documents: /4 - The tech/*.md
+
+
+# ═══════════════════════════════════════════════════════════════
+# WORKPLACE DATA ACCESS
+# ═══════════════════════════════════════════════════════════════
+
+TECH_01:
+  name: Calendar Integration
+  serves_capability: workplace_data_access
+  research_source: none (commodity)
+
+  approaches:
+    - name: Platform-Specific APIs (Google Calendar, Microsoft Graph)
+      known_requirements:
+        - OAuth 2.0 authentication per provider
+        - Webhook or polling for change detection
+      known_challenges:
+        - Two separate integrations minimum (Google + Microsoft covers ~90% of market)
+        - Rate limiting on frequent polling; webhook delivery not guaranteed
+      accelerators: [Google Calendar API, Microsoft Graph API]
+
+    - name: Middleware Abstraction (Nylas, Cronofy)
+      known_requirements:
+        - Subscription cost per user
+        - OAuth proxy through middleware provider
+      known_challenges:
+        - Vendor dependency on critical data path
+        - Latency through additional layer
+      accelerators: [Nylas Calendar API, Cronofy Scheduling API]
+
+    - name: CalDAV / Open Protocol
+      known_requirements:
+        - RFC 4791 compliance
+        - Server-side CalDAV support from provider
+      known_challenges:
+        - Inconsistent provider implementation
+        - No real-time change notification standard
+      accelerators: [python-caldav, ical.js]
+
+  architectural_scope: isolated
+  integration_surface: multi-system
+  data_architecture: stateless
+  min_integration_before_signal: single_component
+
+  serves_foundations: [FDN01]
+  needed_by_models:
+    required: [M1, M2, M4, M5, M6, M7]
+    optional: [M3, M8]
+  relevant_claims: []
+  relevant_caveats: []
+
+  technology_stake: low
+  remaining_uncertainty: very_low
+  investigation_accessibility: trivial
+
+
+TECH_02:
+  name: Task Tool Integration
+  serves_capability: workplace_data_access
+  research_source: none (partially covered by Multi-Tool Integration research)
+
+  approaches:
+    - name: Direct API Per Platform
+      known_requirements:
+        - Per-platform OAuth and schema mapping
+        - Read + write access for reordering/injection models (M4, M6)
+      known_challenges:
+        - O(N) maintenance burden; each platform has unique data model
+        - Schema drift across platform versions
+      accelerators: [Todoist API, Notion API, Asana API, Linear API, Jira API, ClickUp API]
+
+    - name: Unified API Layer
+      known_requirements:
+        - Middleware subscription
+        - Mapping custom fields through normalised schema
+      known_challenges:
+        - Custom field loss in unified schema
+        - Background sync staleness for near-real-time needs
+      accelerators: [Nango (600+ APIs), Merge.dev]
+
+    - name: MCP Server Per Platform
+      known_requirements:
+        - MCP server implementation per tool
+        - OAuth 2.1 per MCP specification
+      known_challenges:
+        - Community server quality varies significantly
+        - Write operations less mature than read across community servers
+      accelerators: [MCP SDK, community servers (GitHub ecosystem), Nango MCP bridge]
+
+  architectural_scope: moderate
+  integration_surface: multi-system
+  data_architecture: stateless_to_light_cache
+  min_integration_before_signal: single_component
+
+  serves_foundations: [FDN02]
+  needed_by_models:
+    required: [M1, M4, M6, M7]
+    optional: [M2, M8]
+  relevant_claims: [C012, C013]
+  relevant_caveats: []
+
+  technology_stake: moderate
+  remaining_uncertainty: low
+  investigation_accessibility: easy
+
+
+# ═══════════════════════════════════════════════════════════════
+# INTEGRATION INFRASTRUCTURE
+# ═══════════════════════════════════════════════════════════════
+
+TECH_03:
+  name: Multi-Tool Integration Architecture
+  serves_capability: integration_infrastructure
+  research_source: "Multi-Tool Integration Architectures.md"
+
+  approaches:
+    - name: Direct API Integration
+      known_requirements:
+        - O(N) custom connectors in application
+        - Per-API OAuth implementation (100+ documented quirks)
+      known_challenges:
+        - Rate-limit cascades across providers
+        - OAuth token expiry storms at scale
+        - Schema drift across API versions
+      accelerators: [Platform SDKs, OpenAPI code generators]
+
+    - name: Middleware / Unified API
+      known_requirements:
+        - O(1) consumer interface; O(N) on middleware side
+        - Centralised auth management
+      known_challenges:
+        - Single point of failure for all tool access
+        - Background sync staleness
+        - Unified schema loses custom fields
+      accelerators: [Nango (600+ APIs), Merge.dev, Unified.to]
+
+    - name: Protocol-Based (MCP)
+      known_requirements:
+        - M+N additive integration cost (any client talks any server)
+        - OAuth 2.1 mandatory per specification
+      known_challenges:
+        - Context window exhaustion — 75-100K tokens for tool definitions alone (5 servers × 50 tools × 400-600 tokens each)
+        - Tool selection accuracy degrades beyond ~15 visible tools
+        - SSE statefulness complicates horizontal scaling
+      accelerators: [MCP SDK, community servers, Nango MCP bridge]
+      # MITIGATION: Intelligent routing layer filters to 8-10 tools
+      # per request based on semantic analysis. ~95% token reduction.
+      # Engineering problem, not fundamental limitation.
+
+    - name: Agent-Based (A2A Protocol)
+      known_requirements:
+        - Agent Cards with OpenAPI security schemes
+        - Task-based delegation model
+      known_challenges:
+        - Development slowed as of Sept 2025 while MCP became de facto standard
+        - Delegation chain latency
+        - Protocol fragmentation risk
+      accelerators: [Google A2A SDK]
+
+  architectural_scope: cross-cutting
+  integration_surface: multi-system
+  data_architecture: stateless
+  min_integration_before_signal: single_component
+
+  serves_foundations: [FDN06]
+  needed_by_models:
+    required: [M1, M2, M4, M6]
+    optional: [M3, M5, M7, M8]
+  relevant_claims: []
+  relevant_caveats: []
+
+  technology_stake: high
+  remaining_uncertainty: moderate
+  investigation_accessibility: moderate
+
+
+# ═══════════════════════════════════════════════════════════════
+# PROCESSING INFRASTRUCTURE
+# ═══════════════════════════════════════════════════════════════
+
+TECH_04:
+  name: Local AI Inference
+  serves_capability: processing_infrastructure
+  research_source: "Local AI Inference Architectures.md"
+
+  approaches:
+    - name: Full On-Device (llama.cpp / Ollama / MLX)
+      known_requirements:
+        - 3-14B quantized models practical limit on consumer hardware
+        - 4-bit quantization for memory-constrained devices
+      known_challenges:
+        - 1-3% accuracy drop at 4-bit quantization (negligible at 8-bit)
+        - Long-context tasks (>4K tokens) degrade on smaller models
+      accelerators: [llama.cpp, Ollama, Apple MLX, LocalAI]
+      # KEY FINDING (Bayer AG pharma study): Fine-tuned T5-220M (local)
+      # beats zero-shot GPT-4 on domain-specific entity extraction.
+      # For workplace extraction with well-defined schemas, small models
+      # match or exceed cloud models on complex entity-linking tasks.
+
+    - name: Attested Confidential Cloud (Apple PCC model)
+      known_requirements:
+        - Encrypted transit; stateless server-side processing
+        - Cryptographic verification of server behaviour
+      known_challenges:
+        - Platform dependency (Apple ecosystem)
+        - Requires trust in attestation infrastructure
+      accelerators: [Apple Private Cloud Compute]
+
+    - name: TEE-GPU Hybrid
+      known_requirements:
+        - Partitioning between SGX enclave (privacy-critical) and GPU (compute)
+        - Activation perturbation for privacy guarantee
+      known_challenges:
+        - 4.7x speedup vs full-TEE but still overhead vs unprotected
+        - BLEU degradation <0.12 under black-box attacks
+      accelerators: [Intel SGX, NVIDIA Confidential Computing]
+
+    - name: Split Edge-Cloud
+      known_requirements:
+        - Well-chosen partition point between local and cloud inference
+        - Differential privacy option for intermediate representations
+      known_challenges:
+        - 1.4-2.8x latency reduction vs pure cloud, but still has cloud dependency
+        - Privacy of intermediate representations depends on partition design
+      accelerators: [ONNX Runtime, TensorRT for edge inference]
+
+    - name: Fully Homomorphic Encryption (FHE)
+      known_requirements:
+        - FHE library integration; encryption of model inputs
+      known_challenges:
+        - ~2.4 min first token, ~1.7 min/token subsequent (3000x slower than plaintext)
+        - Not viable for interactive use today
+      accelerators: [Zama Concrete ML, Microsoft SEAL]
+
+    - name: Federated Learning (model updates, not inference)
+      known_requirements:
+        - Local training on device; only parameter updates transmitted
+        - Differential privacy noise injection
+      known_challenges:
+        - Convergence quality with DP noise vs centralised training
+        - FwdLLM enables billion-param fine-tuning on mobile but is early
+      accelerators: [FwdLLM (USENIX ATC 2024), Flower framework]
+
+  architectural_scope: cross-cutting
+  integration_surface: standalone
+  data_architecture: stateless
+  min_integration_before_signal: single_component
+
+  serves_foundations: [FDN05]
+  needed_by_models:
+    required: [M1, M2, M6]
+    optional: [M3, M4, M5, M7, M8]
+  relevant_claims: []
+  relevant_caveats: []
+
+  technology_stake: high
+  remaining_uncertainty: low
+  investigation_accessibility: easy
+
+
+# ═══════════════════════════════════════════════════════════════
+# KNOWLEDGE ACCUMULATION
+# ═══════════════════════════════════════════════════════════════
+
+TECH_05:
+  name: Knowledge Extraction and Structured Memory
+  serves_capability: knowledge_accumulation
+  research_source: "Knowledge Extraction Architectures.md"
+
+  approaches:
+    - name: GraphRAG (Hierarchical Community-Based)
+      known_requirements:
+        - Batch LLM extraction of entities and relationships
+        - Leiden clustering into communities; hierarchical report generation
+      known_challenges:
+        - Requires full graph reconstruction on updates; no incremental path
+        - 40-60% of enterprise RAG implementations fail to reach production
+        - Extraction drift degrades quality over time
+      accelerators: [Microsoft GraphRAG (open source), Neo4j]
+
+    - name: LightRAG (Incremental Dual-Level)
+      known_requirements:
+        - Incremental insertion without full reconstruction
+        - Dual-level retrieval (local subgraph + community concepts)
+      known_challenges:
+        - Entity deduplication unaddressed at scale
+        - Format sensitivity when using small local LLMs for extraction
+      accelerators: [LightRAG (open source)]
+
+    - name: TG-RAG (Temporal Graph)
+      known_requirements:
+        - Timestamped relationships in knowledge graph
+        - Hierarchical time index for temporal queries
+      known_challenges:
+        - Temporal extraction errors (implicit references like "last Friday")
+        - Bottom-up report regeneration scales with time hierarchy depth
+      accelerators: [TG-RAG (research code)]
+      # STRUCTURAL ADVANTAGE: Only architecture that explicitly models
+      # knowledge evolution. New data answers differently than old.
+      # Directly relevant to commitment lifecycle management.
+
+    - name: Mem0 (Memory-Centric Incremental)
+      known_requirements:
+        - Per-message LLM extraction with ADD/UPDATE/DELETE/NOOP decisions
+        - Conflict resolution via marking superseded rather than deleting
+      known_challenges:
+        - Single-hop vs relational reasoning tradeoff
+        - Mem0g (graph variant) has 2x token overhead
+        - LLM-dependent operation classification lacks verification
+      accelerators: [Mem0 (open source), Mem0g graph variant]
+      # EVIDENCE: 26% improvement over OpenAI memory baseline.
+      # 91% token savings through incremental updates.
+
+    - name: AutoSchemaKG (Schema-Free Autonomous)
+      known_requirements:
+        - Zero predefined schema; automated conceptualisation
+        - Triple extraction from unstructured text
+      known_challenges:
+        - Batch-oriented only; no incremental update path
+        - Entity resolution quality degrades on domain jargon
+      accelerators: [KGGen (open source, 900M+ nodes production scale)]
+      # NOTE: 22.4% entity reduction through embedding clustering +
+      # LLM deduplication on 1M chars. Dedup improves with corpus size.
+
+    - name: Instructor / Pydantic (Schema-Validated Extraction)
+      known_requirements:
+        - Pre-defined Pydantic schemas for target data structures
+        - LLM fill-in with auto-validation and retry on failure
+      known_challenges:
+        - 68% of extraction errors are hallucinated numbers; 32% incorrect relationships
+        - 12% error rate difference between GPT-4 and LLaMA-2
+        - Small models frequently violate format constraints
+      accelerators: [Instructor (Python), Pydantic, Outlines (constrained generation)]
+      # DATA FLYWHEEL: When extraction-evaluation-feedback loop is
+      # implemented, 40% accuracy improvement over 3 months. Most
+      # products omit the feedback loop layer.
+
+  # CROSS-CUTTING FINDING: Entity resolution is the universal bottleneck.
+  # "John Smith", "J. Smith", "John", "the PM" → same person. KGGen
+  # achieves 22.4% entity reduction, but workplace communications
+  # introduce harder challenges (role references, pronouns, abbreviations).
+  #
+  # CROSS-CUTTING FINDING: Production NLP failures are system-level.
+  # When retrieval context shifts, embeddings drift, or prompts are
+  # truncated, the model continues producing fluent responses while
+  # grounding quietly degrades.
+
+  architectural_scope: cross-cutting
+  integration_surface: multi-system
+  data_architecture: accreting
+  min_integration_before_signal: multi-component
+
+  serves_foundations: [FDN07]
+  needed_by_models:
+    required: [M2, M6]
+    optional: [M4, M5]
+  relevant_claims: [C014, C015, C017, C018, C028]
+  relevant_caveats: [C033, C034]
+
+  technology_stake: very_high
+  remaining_uncertainty: high
+  investigation_accessibility: moderate
+
+
+# ═══════════════════════════════════════════════════════════════
+# STATE SENSING
+# ═══════════════════════════════════════════════════════════════
+
+TECH_06:
+  name: Digital State Inference
+  serves_capability: state_sensing
+  research_source: "Digital State Inference Architectures.md"
+
+  approaches:
+    - name: Smartphone Digital Phenotyping (Sensor-Feature-ML)
+      known_requirements:
+        - GPS, accelerometer, screen, calls, app usage data
+        - RAPIDS feature extraction pipeline
+      known_challenges:
+        - AUROC 0.54-0.59 for affective states (marginal for real-time decisions)
+        - Only 14% of studies anonymise data; 76% use single-device designs
+        - No external validation in 98% of studies
+      accelerators: [RAPIDS (open source feature extraction), LAMP platform]
+
+    - name: Keystroke Dynamics
+      known_requirements:
+        - Key hold/flight time capture; LSTM embeddings or statistics
+        - Within-subject calibration period
+      known_challenges:
+        - EER 2.2% biometric but stress discrimination less validated
+        - Generalisation across devices and input methods unproven
+      accelerators: [NeuroKeys (research), TypeNet]
+      # ADVANTAGE: Content-free — captures timing only, not what was
+      # typed. Excellent privacy profile for on-device inference.
+
+    - name: LLM-as-Interpreter
+      known_requirements:
+        - RAPIDS features serialised to natural language
+        - Few-shot examples for calibration (10-shot: MAE 0.75/5)
+      known_challenges:
+        - Single study (10 participants)
+        - Zero-shot performance poor (MAE 1.65/5)
+        - Worst privacy model — transmits detailed behavioural summaries to cloud
+      accelerators: [Gemini 1.5 Pro, RAPIDS]
+
+    - name: Ambient Binary Sensors (Inactivity Detection)
+      known_requirements:
+        - PIR motion, door contacts, pressure sensors
+        - Edge compute for on-device processing
+      known_challenges:
+        - Detection latency 5-7 hours for state change
+        - Designed for absence detection, not nuanced state inference
+      accelerators: [CASAS smart home platform (18 years of data)]
+      # UNIQUE: First architecture explicitly designed for ABSENCE
+      # detection — sensing that something ISN'T happening. <0.09
+      # false positives/day.
+
+    - name: Federated On-Device Learning
+      known_requirements:
+        - GRU/LSTM trained locally per device
+        - Gradient-only transmission for privacy
+      known_challenges:
+        - Comparable to centralised models on depression detection, but
+          limited evidence for fine-grained workplace state inference
+      accelerators: [Flower federated framework, PySyft]
+
+    - name: LLM Clinical Navigator
+      known_requirements:
+        - LAMP-cortex structured features as input
+        - GPT-4o pattern matching
+      known_challenges:
+        - 52% pattern accuracy overall (below 75% certification threshold)
+        - 100% on worsening detection but 6% on improving detection (floor)
+        - Requires proprietary cloud LLM APIs
+      accelerators: [LAMP-cortex, GPT-4o]
+
+  # CROSS-CUTTING FINDING (2025 Nature perspective): Standardisation
+  # crisis — feature definitions vary wildly, preprocessing differs,
+  # only 2% include external validation. Field is fragmented.
+
+  architectural_scope: moderate
+  integration_surface: standalone_to_moderate
+  data_architecture: streaming_with_light_accumulation
+  min_integration_before_signal: multi-component
+
+  serves_foundations: []
+  needed_by_models:
+    required: [M1]
+    optional: [M4, M5]
+  relevant_claims: [C011, C027]
+  relevant_caveats: [C033]
+
+  technology_stake: moderate
+  remaining_uncertainty: high
+  investigation_accessibility: hard
+
+
+TECH_07:
+  name: Passive Time Attribution
+  serves_capability: state_sensing
+  research_source: "Passive Time Attribution Architectures.md"
+
+  approaches:
+    - name: Heartbeat/Timeout (WakaTime / Wakapi)
+      known_requirements:
+        - Editor keystroke events with file path → project mapping
+        - Configurable timeout value (critical tuning parameter)
+      known_challenges:
+        - Timeout value tradeoff — too short misses thinking time, too long overcounts breaks
+        - WakaTime restricted to 5-240 min; Wakapi initially 30-300 seconds (too short for research workflows)
+      accelerators: [WakaTime (cloud), Wakapi (self-hosted, OSS)]
+      # Goals API enables estimate-vs-actual comparison directly.
+
+    - name: OS Watcher / Bucket (ActivityWatch)
+      known_requirements:
+        - Active window title capture + idle detection
+        - User-defined regex rules for categorisation
+      known_challenges:
+        - Window title alone insufficient for accurate project attribution
+        - Manual rule maintenance as tools/projects change
+      accelerators: [ActivityWatch (100% local, OSS), ActivityWatch MCP server]
+
+    - name: Screen Capture / OCR (Screenpipe)
+      known_requirements:
+        - Continuous screen frames (1 FPS default) + optional audio STT
+        - AI pipe agents for classification
+      known_challenges:
+        - Privacy risk from comprehensive content capture (passwords, private messages visible)
+        - Storage requirements for continuous screen capture
+      accelerators: [Screenpipe (100% local default, OSS)]
+
+    - name: Sensor Fusion / LLM (DailyLLM)
+      known_requirements:
+        - Phone/watch sensors (GPS, IMU, audio, PPG)
+        - Locally fine-tuned LLM for activity classification
+      known_challenges:
+        - Physical activity focus — not designed for digital project attribution
+        - Niche application vs general workplace time tracking
+      accelerators: [DailyLLM (6-bit quantisation, runs on Raspberry Pi)]
+
+    - name: Terminal Logger (CodeChrono)
+      known_requirements:
+        - Terminal commands, git diffs, app focus capture
+        - Explicit session boundary declaration (semi-passive)
+      known_challenges:
+        - Developer-only applicability
+        - Semi-passive requires session start/stop
+      accelerators: [CodeChrono (OSS), Ollama + SQLite]
+      # UNIQUE: LLM predicts future task duration from historical
+      # data. Directly relevant to calibration feedback (M5).
+
+  # FINDING: All architectures focus on presence of activity.
+  # None treat absence of activity as first-class signal.
+  # FINDING (Microsoft SWISH): ~70% task classification accuracy
+  # from window title + switching history in unsupervised settings.
+
+  architectural_scope: moderate
+  integration_surface: standalone
+  data_architecture: accreting
+  min_integration_before_signal: single_component
+
+  serves_foundations: []
+  needed_by_models:
+    required: [M5]
+    optional: [M1, M4]
+  relevant_claims: [C008, C009]
+  relevant_caveats: [C034]
+
+  technology_stake: moderate
+  remaining_uncertainty: moderate
+  investigation_accessibility: easy
+
+
+# ═══════════════════════════════════════════════════════════════
+# TASK INTELLIGENCE
+# ═══════════════════════════════════════════════════════════════
+
+TECH_08:
+  name: AI Task Decomposition
+  serves_capability: task_intelligence
+  research_source: "AI Task Decomposition Architectures.md"
+
+  approaches:
+    - name: ReAct (Reason-Act Loops)
+      known_requirements:
+        - LLM with tool-use capability
+        - Environment that returns observations per action
+      known_challenges:
+        - Myopic — local optimization only; error propagation across long chains
+        - Inefficient for tasks requiring >10 steps
+      accelerators: [LangChain, LangGraph (production-ready)]
+
+    - name: Plan-and-Execute
+      known_requirements:
+        - Planner LLM generates upfront strategy
+        - Executor handles environment; Planner replans after each step
+        - Domain-specific training data (106K+ synthetic samples for Plan-and-Act)
+      known_challenges:
+        - Off-the-shelf LLMs achieve ~14% success without domain training
+        - Replanning overhead expensive for real-time use
+      accelerators: [LangGraph (mature), Plan-and-Act (paper + code)]
+      # KEY: 10.31% improvement with dynamic replanning vs static plans.
+
+    - name: ChatHTN (Hybrid Symbolic-LLM)
+      known_requirements:
+        - Classical HTN planning library with method definitions
+        - LLM fallback for cases outside method library
+        - Verifier ensures soundness of generated plans
+      known_challenges:
+        - Knowledge engineering overhead for method library
+        - Limited to domains with clear preconditions/effects
+      accelerators: [ChatHTN (released NeuS 2025)]
+
+    - name: AFlow (MCTS Search over Workflows)
+      known_requirements:
+        - Monte Carlo Tree Search over workflow configuration space
+        - Benchmark suite for evaluation
+      known_challenges:
+        - Computationally expensive meta-optimization
+        - Benchmark-dependent; transfers poorly across domains
+      accelerators: [AFlow (GitHub, ICLR 2025 oral)]
+
+    - name: Decomposed Prompting
+      known_requirements:
+        - Modular library of specialised sub-task handlers
+        - Top-level decomposer routes to handlers
+      known_challenges:
+        - Static decomposition; no runtime adaptation
+        - Library engineering burden; careful handler interface design required
+      accelerators: [Allen AI code, DSPy (production-ready)]
+
+    - name: Cognitive Scaffolding (user-guided, not AI-solved)
+      known_requirements:
+        - Metacognitive tracking and reflection pauses
+        - Self-explanation prompts
+      known_challenges:
+        - Motivation challenge — adds friction by design
+        - Least mature; no production implementations
+        - Addresses "thinking better" not "doing faster"
+      accelerators: [Research prototypes only]
+
+  # CROSS-CUTTING: Training data is the real bottleneck. Domain-specific
+  # task decomposition requires either synthetic data generation at scale
+  # (106K+ samples) or careful prompt engineering with domain-specific
+  # handler libraries.
+
+  architectural_scope: moderate
+  integration_surface: moderate
+  data_architecture: stateless_to_light_accumulation
+  min_integration_before_signal: multi-component
+
+  serves_foundations: []
+  needed_by_models:
+    required: [M6, M8]
+    optional: [M4]
+  relevant_claims: [C011, C013]
+  relevant_caveats: [C033]
+
+  technology_stake: moderate
+  remaining_uncertainty: moderate_high
+  investigation_accessibility: moderate
+
+
+# ═══════════════════════════════════════════════════════════════
+# INTERVENTION DELIVERY
+# ═══════════════════════════════════════════════════════════════
+
+TECH_09:
+  name: Anti-Habituation / Intervention Variability
+  serves_capability: intervention_delivery
+  research_source: "Anti-Habituation Architectures.md"
+
+  approaches:
+    - name: Contextual Bandit JITAI (Just-In-Time Adaptive Interventions)
+      known_requirements:
+        - Thompson sampling at repeated micro-decision points
+        - Pooled priors for cold-start; individual learning over time
+      known_challenges:
+        - Content library exhaustion — bandit can only select from available arms
+        - Cold-start requires full population pooling
+      accelerators: [Oralytics codebase, HeartSteps (open MRT platform)]
+      # EVIDENCE: Oralytics (70-day clinical trial): algorithm learned
+      # to adjust actions effectively. HeartSteps: 60 days sustained.
+      # DAMNING: Drink Less MRT — 30 theoretically-informed new messages
+      # produced identical time-to-disengagement as 1 generic message.
+      # Users habituate to DELIVERY PATTERN, not content.
+
+    - name: Sleeping / Recovering Bandit
+      known_requirements:
+        - Recovery function per message arm (recent use penalises; recovery over time)
+        - Large content library to rotate through
+      known_challenges:
+        - Second-order habituation — users learn the meta-pattern of rotation
+        - Library size ceiling limits rotation diversity
+      accelerators: [Duolingo (population-scale production system)]
+      # EVIDENCE: Duolingo 0.5% DAU lift, 2% new-user retention.
+      # Significant at Duolingo scale, modest in absolute terms.
+
+    - name: Restless Multi-Armed Bandit (RMAB — population-level scheduling)
+      known_requirements:
+        - 2-state Markov model per beneficiary
+        - Whittle Index computation for intervention scheduling
+        - Budget constraint (limited intervention capacity)
+      known_challenges:
+        - No content variability — only selects WHO gets intervention, not WHAT
+        - Budget sensitivity; degrades outside calibrated range
+      accelerators: [ARMMAN platform]
+      # EVIDENCE: ARMMAN maternal health (9,000 beneficiaries):
+      # 31% reduction in cumulative engagement drops vs control (p=0.024).
+
+    - name: Generative AI Content Factory
+      known_requirements:
+        - LLM generates unique messages per behaviour-change-technique parameter
+        - Quality validation per generated message
+      known_challenges:
+        - Untested in actual delivery context — generation proven, engagement not
+        - Hallucination risk in health/productivity messaging
+        - BCT faithfulness unvalidated at scale
+      accelerators: [GPT-4 / Claude for generation, BERT/ADA for diversity analysis]
+      # EVIDENCE: 1,150 unique SMS generated for diabetes intervention.
+      # Embedding analysis confirms diversity. But ZERO delivery testing.
+
+    - name: Multi-Agent Generative (CTC Coach-Teacher-Companion model)
+      known_requirements:
+        - Multiple LLM personas with distinct communication styles
+        - Multimodal sensing for context
+        - Item response theory for difficulty adaptation
+      known_challenges:
+        - Hallucination in vulnerable populations
+        - Agent-switching confusion
+        - Whether generative variability resists meta-habituation is the fundamental open question
+      accelerators: [ElliQ (related production system, 80% sustained engagement)]
+
+  # THE META-HABITUATION PROBLEM: The Drink Less trial proves users
+  # habituate to the delivery PATTERN (predictable notification at
+  # predictable time through predictable channel), not to specific
+  # content. Content variation alone is insufficient.
+  #
+  # ARCHITECTURE CONVERGENCE: Bandit selection + variable-ratio
+  # scheduling + multi-channel delivery + content quality validation.
+  # No system yet combines all four.
+
+  architectural_scope: cross-cutting
+  integration_surface: multi-system
+  data_architecture: accreting
+  min_integration_before_signal: multi-component
+
+  serves_foundations: [FDN04]
+  needed_by_models:
+    required: [M1, M2, M4, M5, M6, M7]
+    optional: []
+  relevant_claims: [C022, C024, C025]
+  relevant_caveats: [C034]
+
+  technology_stake: high
+  remaining_uncertainty: high
+  investigation_accessibility: hard
+
+
+# ═══════════════════════════════════════════════════════════════
+# INPUT MODALITY
+# ═══════════════════════════════════════════════════════════════
+
+TECH_10:
+  name: Speech-to-Structured Output
+  serves_capability: input_modality
+  research_source: "Speech-to-Structured-Output Architectures.md"
+
+  approaches:
+    - name: Cascaded ASR → LLM Pipeline
+      known_requirements:
+        - Whisper/Conformer for ASR + WhisperX/pyannote for diarisation
+        - LLM post-processing for disfluency removal and restructuring
+      known_challenges:
+        - Error propagation between cascade stages
+        - Disfluency removal tradeoff — over-deletion (reasoning models) vs under-deletion (conservative models)
+      accelerators: [Whisper (OSS), WhisperX, pyannote, Faster-Whisper]
+      # MOST MATURE: ~300ms ASR + 200-400ms LLM inference. Production-ready.
+
+    - name: Multimodal LLM (Gemini-class native audio)
+      known_requirements:
+        - Native audio processing capability (no explicit ASR stage)
+        - Sufficient context window for full conversation
+      known_challenges:
+        - Diarisation quality not independently evaluable (implicit in model)
+        - Platform dependency on provider
+      accelerators: [Gemini 2.5 Flash (sub-800ms), GPT-4o audio]
+
+    - name: End-to-End Speech LLM
+      known_requirements:
+        - Speech encoder + LLM backbone; joint diarisation
+        - Training data for domain adaptation
+      known_challenges:
+        - Limited to 2 speakers in current implementations
+        - No native structuring — requires downstream system for output formatting
+      accelerators: [MLC-SLM Challenge models, Speech ReaLLM (real-time)]
+      # EVIDENCE: DER 13.36%; 54.87% relative improvement over cascaded.
+
+    - name: DiarizationLM (Post-Processing Correction)
+      known_requirements:
+        - Frozen ASR + frozen diarisation as input
+        - LLM corrects diarisation labels and merges disfluent fragments
+      known_challenges:
+        - Post-processing only (batch, not streaming)
+        - No native output structuring
+      accelerators: [DiarizationLM (Google)]
+      # EVIDENCE: WDER 2.37% on Fisher (55.5% improvement).
+      # Cross-domain generalisation without target-domain training data.
+
+  # DRES BENCHMARK (Sept 2025) KEY FINDINGS:
+  # - Segmentation is the silver bullet: improves all models consistently
+  #   (GPT-4o: EF 76.13 → 82.38 with segmentation)
+  # - Fine-tuned GPT-4o-mini achieves EP=96.6% but degrades on unrelated tasks
+  # - Reasoning capability ≠ disfluency removal ability
+  #
+  # PRODUCTION HYBRID PATTERN EMERGING:
+  # Streaming ASR → end-to-end diarisation → DiarizationLM correction
+  # → RAG-augmented LLM for restructuring → domain-specific terminology fix
+
+  architectural_scope: isolated
+  integration_surface: standalone
+  data_architecture: stateless
+  min_integration_before_signal: single_component
+
+  serves_foundations: []
+  needed_by_models:
+    required: [M3]
+    optional: [M2]
+  relevant_claims: []
+  relevant_caveats: []
+
+  technology_stake: low
+  remaining_uncertainty: low
+  investigation_accessibility: easy
+
+
+# ═══════════════════════════════════════════════════════════════
+# CROSS-CUTTING FINDINGS (from research across all areas)
+# ═══════════════════════════════════════════════════════════════
+#
+# 1. TRAINING DATA BOTTLENECK IS UBIQUITOUS
+#    Task Decomposition needs 106K+ synthetic samples.
+#    Knowledge Extraction failures are system-level pipeline issues.
+#    Anti-Habituation needs years of bandit tuning (Duolingo).
+#    Speech-to-Structured needs domain fine-tuning or correction.
+#    → Domain-specific training data generation is the common
+#      engineering burden across high-uncertainty areas.
+#
+# 2. CONTEXT WINDOW IS THE NEW LATENCY BOTTLENECK
+#    MCP's 75-100K token overhead for tool definitions reveals that
+#    token budget now constrains agent capability more than actual
+#    latency. Intelligent routing layers are becoming standard.
+#
+# 3. PRIVACY-PRESERVING INFERENCE HAS CROSSED THE PRODUCTION LINE
+#    On-device (llama.cpp / Ollama / MLX) production-ready for 3-14B.
+#    FwdLLM enables billion-parameter fine-tuning on mobile.
+#    Apple PCC demonstrates cryptographic attestation.
+#    Quality gap for complex tasks remains meaningful, but for
+#    domain-specific extraction with defined schemas, local models
+#    match or exceed cloud zero-shot.
+#
+# 4. COMBINATION ARCHITECTURES ARE THE FUTURE
+#    No single approach solves any area completely. Production
+#    systems converge on hybrids: bandit + generative + variable-
+#    ratio for habituation; streaming ASR + diarisation + LLM
+#    correction for speech; local inference + MCP + knowledge
+#    graph for the core data pipeline.
+#
+# 5. DATA FLYWHEEL REQUIRES EXPLICIT ENGINEERING
+#    Extraction-evaluation-feedback loops show 40% accuracy
+#    improvement over 3 months but do NOT emerge naturally.
+#    Most products omit the feedback layer entirely.

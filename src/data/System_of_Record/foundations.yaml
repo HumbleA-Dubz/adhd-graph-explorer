@@ -1,0 +1,106 @@
+# foundations.yaml
+# Shared capabilities required across 3+ engagement models.
+# These are "build regardless of direction" requirements — any
+# product addressing ADHD workplace problems needs them.
+#
+# Foundations represent the strongest "what to build with high
+# confidence" recommendations in the system.
+#
+# Technical detail (approaches, tradeoffs, accelerators) is in
+# technologies.yaml. Foundations point to technology entries via
+# technology_ref. Foundations describe WHY something is needed;
+# technologies.yaml describes HOW it could be built.
+
+Calendar Integration:
+  id: FDN01
+  technology_ref: TECH_01
+  required_by:
+    required: [M1, M2, M4, M5, M6, M7]
+    optional: [M3, M8]
+  purpose: >
+    Knowing what the user should be working on, when meetings
+    are, and where time conflicts exist. Used for context in
+    interventions (M1), resurfacing timing (M2), time-aware
+    reordering (M4), conflict detection (M5), injection timing
+    (M6), and check-in content (M7).
+
+Task Tool Integration:
+  id: FDN02
+  technology_ref: TECH_02
+  required_by:
+    required: [M1, M4, M6, M7]
+    optional: [M2, M8]
+  purpose: >
+    Read access to task lists from external tools. Some models
+    (M4, M6) also need write access to reorder or inject tasks.
+    No universal task API exists — each platform requires
+    separate integration.
+
+Non-Shaming Tone and Language Framework:
+  id: FDN03
+  required_by:
+    required: [M1, M2, M3, M4, M5, M6, M7, M8]
+    optional: []
+  purpose: >
+    Any user-facing text must follow ADHD-appropriate tone
+    guidelines. This is not a feature — it is a constraint on
+    every surface that generates or displays text. Includes AI-
+    generated content (nudges, summaries, scaffolds, prompts).
+  note: >
+    Design constraint, not a technology area. No technology_ref.
+    Implementation is through prompt engineering, content review
+    processes, and tone guidelines applied to all AI-generated
+    output.
+  claims: [C020, C021, C022]
+
+Variability Engine:
+  id: FDN04
+  technology_ref: TECH_09
+  required_by:
+    required: [M1, M2, M4, M5, M6, M7]
+    optional: []
+  note: M3 and M8 are episodic/on-demand and exempt
+  purpose: >
+    Required by MC1 (Novelty Decay) as a universal
+    architectural requirement. Any model that delivers recurring
+    interventions must vary what it does, when, and how. This is
+    not a feature — it is an architectural requirement affecting
+    the entire notification and delivery pipeline.
+  claims: [C022, C024, C025]
+
+On-Device Processing:
+  id: FDN05
+  technology_ref: TECH_04
+  required_by:
+    required: [M1, M2, M6]
+    optional: [M3, M4, M5, M7, M8]
+  purpose: >
+    Privacy-critical for models that monitor activity (M1),
+    read communications (M2), or access project tools broadly
+    (M6). On-device processing prevents sensitive work data
+    from leaving the user's machine.
+
+MCP Integration Backbone:
+  id: FDN06
+  technology_ref: TECH_03
+  required_by:
+    required: [M1, M2, M4, M6]
+    optional: [M3, M5, M7, M8]
+  purpose: >
+    Standardised tool connectivity. Reduces the N-by-M
+    integration problem to N MCP servers. Essential for
+    multi-channel capture (M2) and multi-tool project
+    monitoring (M6).
+
+Knowledge Graph and Structured Memory:
+  id: FDN07
+  technology_ref: TECH_05
+  required_by:
+    required: [M2, M6]
+    optional: [M4, M5]
+  purpose: >
+    Automatic entity extraction and relationship mapping from
+    unstructured text. Enables contextual resurfacing, multi-
+    hop reasoning, and compound value over time. The primary
+    defence against MC1 (Novelty Decay) through compounding
+    switching cost.

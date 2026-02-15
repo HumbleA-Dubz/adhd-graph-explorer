@@ -1,0 +1,166 @@
+# meta_challenges.yaml
+# Cross-cutting structural constraints that apply to ANY ADHD
+# workplace product regardless of problem cluster, engagement
+# model, or implementation. These are persistent environmental
+# and neurological constraints — not risks that a feature solves.
+#
+# Inclusion criteria (all four):
+# 1. Cross-cluster: affects 2+ of 3 clusters
+# 2. Cross-engagement-model: affects 2+ engagement models
+# 3. Not implementation-solvable
+# 4. Evidenced
+
+Novelty Decay and Intervention Habituation:
+  id: MC1
+  plain_language: >
+    ADHD brains habituate to interventions as novelty fades.
+    The tool that works brilliantly in week one may be invisible
+    by week four — not because it stopped being useful, but
+    because the brain stopped registering it as stimulating.
+    This is neurological, not a UX failure.
+  severity: Critical
+  evidence_tier: Tier 1-2
+  clusters_affected: [A, B, C]
+  claims: [C022, C024, C025]
+  favours_models:
+    - Passive Capture and Structured Delivery
+    - Ambient Monitor and Intervene
+    - Periodic Injection
+  disfavours_models:
+    - Structured Check-In
+    - On-Demand Scaffolding
+  key_evidence: >
+    Medication adherence averages 56% (n=4,011); 50-70%
+    discontinue within 1 year (n=1.2M); 77% do not complete
+    self-guided digital interventions; app graveyard is
+    universal across all tool categories.
+  compound_effects:
+    amplifies: [MC2, MC3, MC5]
+    amplified_by: []
+  derived_from: Our_Meta_Challenges
+
+Circular Dependency:
+  id: MC2
+  plain_language: >
+    Every ADHD tool requires the user to engage with it using
+    the very cognitive functions the tool compensates for.
+    You need to remember to use the tool that helps you
+    remember. You need to initiate use of the tool that helps
+    you initiate. This is structural and irreducible — it can
+    only be asymptotically reduced.
+  severity: Critical
+  evidence_tier: Tier 1-2
+  clusters_affected: [A, B, C]
+  claims: [C019, C025]
+  favours_models:
+    - Passive Capture and Structured Delivery
+    - Ambient Monitor and Intervene
+    - Periodic Injection
+  disfavours_models:
+    - Structured Check-In
+    - On-Demand Scaffolding
+    - Calibration Feedback Loop
+  key_evidence: >
+    Prospective memory: 52% of ADHD participants forgot a
+    naturalistic task vs 21% controls. Task initiation: 40.7%
+    report problems often/very often. SMS reminders increased
+    login at module 2 only — the reminder itself habituates.
+    "Those apps will NEVER WORK because you have to remember
+    to look at them, which you won't."
+  compound_effects:
+    amplifies: [MC3]
+    amplified_by: [MC1, MC5]
+  derived_from: Our_Meta_Challenges
+
+Shame-Avoidance Spiral:
+  id: MC3
+  plain_language: >
+    When the user falls behind, the tool generates visible
+    evidence of failure — overdue counts, broken streaks,
+    unprocessed queues. This triggers shame that makes
+    re-engagement less likely, not more. The tool designed
+    to help becomes a source of pain. Distinct from novelty
+    decay: this operates even when the user wants to return.
+  severity: High
+  evidence_tier: Tier 2-3
+  clusters_affected: [A, B, C]
+  claims: [C020, C021, C022]
+  favours_models:
+    - Passive Capture and Structured Delivery
+    - Ambient Monitor and Intervene
+  disfavours_models:
+    - Structured Check-In
+    - Calibration Feedback Loop
+  key_evidence: >
+    "73 overdue tasks glaring at me — I'd rather uninstall
+    the app than confront the reality." Pre-formatted planners
+    create shame from blank pages. Non-adapted CBT worsened
+    self-esteem, increased sense of failure. Users who praised
+    sustained tools (plain notebooks, Amazing Marvin) cited
+    "no judgment for missed days."
+  compound_effects:
+    amplifies: []
+    amplified_by: [MC1, MC2]
+  derived_from: Our_Meta_Challenges
+
+Disclosure and Workplace Visibility Constraint:
+  id: MC4
+  plain_language: >
+    Using an ADHD-specific tool in a workplace creates
+    disclosure risk — an "ADHD Planner" visible during
+    screen-share, a bot with a neurodivergent brand. Many
+    ADHD adults have not disclosed at work and fear
+    discrimination. The tool must serve ADHD-specific needs
+    while being invisible or neutral in workplace contexts.
+  severity: High
+  evidence_tier: Tier 2-3
+  clusters_affected: [A, B, C]
+  claims: [C026]
+  favours_models:
+    - Passive Capture and Structured Delivery
+    - Ambient Monitor and Intervene
+    - Periodic Injection
+  disfavours_models:
+    - Structured Check-In
+  key_evidence: >
+    Practitioners report consistent disclosure dilemma across
+    clients: fear of discrimination, uncertainty, managers
+    who don't know how to respond. Most successful ADHD-
+    adjacent tools (Motion, Sunsama, Reclaim) brand as
+    general productivity. Granola's bot-free approach is
+    commercially validated partly by removing the social signal.
+  compound_effects:
+    amplifies: [MC3]
+    amplified_by: []
+  derived_from: Our_Meta_Challenges
+
+Notification Desensitisation:
+  id: MC5
+  plain_language: >
+    ADHD brains desensitise to repeated notifications faster
+    than neurotypical brains. Alarms, push notifications, and
+    email reminders lose effectiveness within weeks as the
+    brain filters them as non-novel. Even a perfectly designed
+    intervention fails if the notification that delivers it
+    is no longer perceived.
+  severity: Moderate-High
+  evidence_tier: Tier 2-3
+  clusters_affected: [A, B]
+  claims: [C022, C021]
+  favours_models:
+    - Passive Capture and Structured Delivery
+    - Ambient Monitor and Intervene
+  disfavours_models:
+    - Structured Check-In
+    - Calibration Feedback Loop
+  key_evidence: >
+    SMS reminders for ADHD interventions increased login at
+    module 2 only — no effect on remaining modules. Pomodoro
+    failure is the canonical example. "I soon become
+    desensitised to them and stop paying attention." Alarm
+    fatigue documented across every time-management tool
+    category.
+  compound_effects:
+    amplifies: [MC2]
+    amplified_by: [MC1]
+  derived_from: Our_Meta_Challenges

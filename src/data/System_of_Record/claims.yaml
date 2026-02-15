@@ -1,0 +1,644 @@
+# claims.yaml
+# Hub claims — the evidence base for the system of record.
+# Every other entity references claims. Only claims that carry
+# analytical weight are included; not every data point.
+#
+# Types: observation | interpretation | synthesis | caveat
+#
+# Relationship types:
+#   supports: [entity_id] — this claim provides evidence for
+#   challenged_by: [claim_id] — another claim qualifies or disputes this
+#   depends_on: [claim_id] — this claim's validity rests on another
+#
+# Source references point to entries in sources.yaml — always to
+# original studies, community evidence, or practitioner data.
+# Where a claim synthesizes across multiple inputs, all key
+# contributing sources are listed. The claim's `type` field
+# distinguishes external data (observation) from our framing
+# (interpretation/synthesis).
+
+# ═══════════════════════════════════════════════════════════════
+# PREVALENCE AND SCALE
+# Establishing that ADHD workplace impairment is widespread,
+# multi-domain, and economically significant
+# ═══════════════════════════════════════════════════════════════
+
+C001:
+  statement: >
+    Adults with ADHD show clusters of observable problems across
+    productivity, time management, reliability, interpersonal
+    behaviour and safety simultaneously, with more than 80%
+    reporting at least one significant work problem and ~60%
+    reporting three or more distinct problems.
+  type: observation
+  sources: [Fuermaier_2021]
+  relationships:
+    supports: [FP01, FP02, FP03, FP05]
+  comments: >
+    German outpatient sample (n=134) using WFIRS scale.
+    Foundational claim establishing multi-domain impairment.
+
+C002:
+  statement: >
+    Workers with ADHD lose 22.1 extra days per year of role
+    performance versus similar workers without ADHD, with more
+    than half the total loss occurring on days the worker is
+    present (presenteeism), not absent.
+  type: observation
+  sources: [deGraaf_2008]
+  relationships:
+    supports: [FP02, FP03]
+  comments: >
+    WHO World Mental Health Survey, 7,075 workers across 10
+    countries. The presenteeism finding is significant — the
+    problem is not absence but reduced output while present.
+
+C003:
+  statement: >
+    Adults with ADHD have a 10-fold higher risk of disability
+    pension and only 22-24% employment rates versus 72-79% in
+    control populations, consistent across Norwegian and Swedish
+    population cohorts.
+  type: observation
+  sources: [Swedish_Population_2021, Norwegian_Employment_Study]
+  relationships:
+    supports: []
+    challenged_by: [C004]
+  comments: >
+    Swedish cohort N=~64,000 (including 9,718 ADHD); Norwegian
+    clinical sample. These are endpoint data showing labour
+    market exit, not just difficulty.
+
+C004:
+  statement: >
+    The most common self-reported work impairment (69%) is
+    "problems working to your potential" — an internal sense of
+    underperformance — while actual termination rates are lower
+    (20-23%), suggesting many ADHD adults experience their
+    performance as worse than employers perceive it.
+  type: interpretation
+  sources: [Fuermaier_2021, Barkley_Murphy_2010]
+  relationships:
+    challenged_by: [C005]
+  comments: >
+    WFIRS item #10 from Fuermaier; termination data from
+    Barkley & Murphy occupational history. The gap between
+    subjective distress and objective job loss matters for
+    product design.
+
+C005:
+  statement: >
+    Even when blinded to ADHD diagnosis, employers rate ADHD
+    employees as having significantly greater inattentiveness,
+    poor punctuality, time management problems, and overall
+    poorer work performance than controls.
+  type: observation
+  sources: [Barkley_Murphy_2010]
+  relationships:
+    challenged_by: []
+  comments: >
+    Validates that impairment is observable, not just self-
+    perceived. Partially qualifies C004 — the gap between
+    self-report and employer perception may be smaller than
+    the internal/external framing suggests.
+
+# ═══════════════════════════════════════════════════════════════
+# MECHANISM: INATTENTION AND ATTENTION ALLOCATION
+# Evidence for the primacy of inattention over hyperactivity
+# in workplace outcomes
+# ═══════════════════════════════════════════════════════════════
+
+C006:
+  statement: >
+    Inattention symptoms show the strongest correlations
+    (r=0.40-0.60) with work problems across both community and
+    clinical samples. Inattention significantly predicts
+    employment status while hyperactivity/impulsivity,
+    comorbidities, and demographics do not.
+  type: observation
+  sources: [Norwegian_Employment_Study]
+  relationships:
+    supports: [Attention Allocation Dysfunction]
+  comments: >
+    N=149, multivariate analysis. This is why the mechanism
+    layer focuses on attention allocation, not hyperactivity.
+
+C007:
+  statement: >
+    Objective cognitive tests account for little variance in
+    workplace functioning; self-reported everyday behaviours
+    predict work outcomes much better.
+  type: observation
+  sources: [Barkley_Murphy_2010]
+  relationships: {}
+  comments: >
+    Drawn from occupational history comparison of neuropsych
+    measures versus structured interview data. General finding
+    replicated across the ADHD workplace literature — ecological
+    validity of laboratory tests is poor.
+
+# ═══════════════════════════════════════════════════════════════
+# MECHANISM: TIME PERCEPTION
+# Evidence for time blindness as neurological, not behavioural
+# ═══════════════════════════════════════════════════════════════
+
+C008:
+  statement: >
+    Time blindness in ADHD is a fundamental difference in time
+    perception, not merely poor planning. Standard time
+    management tools (calendars, to-do lists) consistently fail
+    for ADHD users because they assume an internal time sense
+    that does not exist.
+  type: interpretation
+  sources: [Burnout_Mediation_2024, Fuermaier_2021, P2A_Community_Reports]
+  relationships:
+    supports: [Time Perception Distortion]
+    depends_on: [C009]
+  comments: >
+    Burnout mediation study identified time management as key
+    EF deficit; Fuermaier WFIRS data quantified the impairment;
+    community reports document consistent tool failure. The
+    "assume an internal time sense" framing is our analytical
+    interpretation of why tools fail, hence typed as
+    interpretation.
+
+C009:
+  statement: >
+    Self-management to time was identified as the most
+    significant executive function deficit mediating the
+    relationship between ADHD and job burnout.
+  type: observation
+  sources: [Burnout_Mediation_2024]
+  relationships:
+    supports: [Time Perception Distortion]
+  comments: >
+    Field study of 171 employees. Mediation analysis
+    identifying time management as the strongest EF pathway
+    from ADHD to occupational failure.
+
+C010:
+  statement: >
+    Coaches and occupational therapists consistently prioritise
+    time management as the foundation for intervention because
+    it creates cascading effects: missed deadlines, incomplete
+    projects, chronic lateness, and job instability all follow
+    from time management deficits.
+  type: observation
+  sources: [ADHD_Coaching_Survey, Burnout_Mediation_2024]
+  relationships:
+    supports: [Time Perception Distortion]
+    depends_on: [C009]
+  comments: >
+    Practitioner consensus on causal ordering, corroborated by
+    the mediation study's quantitative identification of time
+    management as primary EF mediator.
+
+# ═══════════════════════════════════════════════════════════════
+# MECHANISM: REWARD / ACTIVATION PROCESSING
+# Evidence for interest-based nervous system, delay discounting
+# ═══════════════════════════════════════════════════════════════
+
+C011:
+  statement: >
+    Task initiation failure in ADHD is qualitatively different
+    from procrastination. Users describe an "invisible barrier"
+    where they know exactly what to do but cannot start, due to
+    altered reward-processing systems. Standard productivity
+    advice ("just start") fails because it assumes a functioning
+    initiation system.
+  type: interpretation
+  sources: [P2A_Community_Reports, ADDitude_Poll]
+  relationships:
+    supports: [Reward and Activation Processing]
+  comments: >
+    Community self-reports (Reddit threads) and ADDitude poll
+    data on task initiation. The phenomenology ("invisible
+    barrier") is directly reported. The causal attribution to
+    reward processing is our interpretation, hence the type.
+
+C012:
+  statement: >
+    The ADHD brain activates on urgency, novelty, interest,
+    challenge, and passion (the INCUP framework) rather than
+    importance. Standard importance-based appeals (long-term
+    consequences, obligation) are structurally mismatched to
+    ADHD activation patterns.
+  type: interpretation
+  sources: [P2A_Community_Reports, ADHD_Coaching_Survey]
+  relationships:
+    supports: [Reward and Activation Processing]
+  comments: >
+    INCUP framework originates from Dodson's clinical work
+    (not a formal study in our bibliography — established
+    clinical knowledge). Community reports and practitioner
+    data provide the evidence that importance-based tools
+    fail in practice. Our contribution is applying the
+    framework to product design implications.
+
+C013:
+  statement: >
+    Delay discounting is a documented mechanism in ADHD where
+    distant rewards lose motivational value exponentially,
+    directly causing long-term project neglect despite
+    intellectual understanding of importance.
+  type: observation
+  sources: [P2A_Community_Reports]
+  relationships:
+    supports: [Reward and Activation Processing]
+  comments: >
+    Delay discounting is well-established in ADHD neuroscience
+    literature but no specific delay discounting study is in
+    our bibliography. The project neglect manifestation is
+    evidenced by community reports of long-term task
+    abandonment patterns. Consider adding a primary delay
+    discounting study if this claim needs strengthening.
+
+# ═══════════════════════════════════════════════════════════════
+# MECHANISM: ENCODING DEFICIT
+# Evidence for information not being stored during processing
+# ═══════════════════════════════════════════════════════════════
+
+C014:
+  statement: >
+    Working memory impairment in ADHD shows effect sizes of
+    d=1.63-2.03 with 75-81% of individuals showing measurable
+    impairment. Neurophysiological evidence shows lower P3
+    amplitude during encoding, indicating ineffective
+    attentional resource allocation at the encoding stage.
+  type: observation
+  sources: [Alderson_2020, Missonnier_2013]
+  relationships:
+    supports: [Encoding Deficit]
+  comments: >
+    Tier 1 clinical evidence. Alderson meta-analysis (effect
+    sizes and prevalence), Missonnier study (P3 neural
+    evidence). Separates encoding deficit from retrieval
+    failure — information never reaches storage.
+
+C015:
+  statement: >
+    Meeting memory failure occurs despite active engagement
+    and comprehension during the meeting. Users understand
+    content in real time but encoding fails silently — users
+    cannot recall even the gist afterward.
+  type: observation
+  sources: [Missonnier_2013, Bonilla_2020, P2A_Community_Reports]
+  relationships:
+    supports: [Encoding Deficit]
+    depends_on: [C014]
+  comments: >
+    Neural evidence (Missonnier, Bonilla) combined with user
+    self-reports of the lived experience. The "despite active
+    engagement" qualifier is critical — this is not an attention
+    problem but an encoding problem.
+
+C016:
+  statement: >
+    Medication improves memory performance but leaves
+    considerable impairments compared to normal functioning,
+    with large deficits persisting in story recall and
+    prospective memory even in treated adults with ADHD.
+  type: observation
+  sources: [Fuermaier_2016]
+  relationships:
+    supports: [Encoding Deficit, Prospective Memory Failure]
+  comments: >
+    Methylphenidate study. Key caveat: medication does not
+    normalise these deficits. Tools addressing encoding and
+    prospective memory are necessary even for medicated
+    populations.
+
+# ═══════════════════════════════════════════════════════════════
+# MECHANISM: PROSPECTIVE MEMORY FAILURE
+# Evidence for forgetting intentions
+# ═══════════════════════════════════════════════════════════════
+
+C017:
+  statement: >
+    Email management failure manifests as reading emails, forming
+    intention to reply, then the intention vanishing from
+    awareness entirely — the "read and forgot" pattern. One
+    user was terminated specifically for failing to send a
+    calendar invite.
+  type: observation
+  sources: [Fuermaier_2013, P2A_Community_Reports]
+  relationships:
+    supports: [Prospective Memory Failure]
+  comments: >
+    Fuermaier 2013 documents the prospective memory impairment
+    mechanism (d=large, n=90); community reports provide the
+    workplace manifestation and employment consequences.
+
+C018:
+  statement: >
+    No existing email tool addresses the core ADHD email failure
+    mechanism: prospective memory failure for reply intentions.
+    All tools focus on inbox volume, processing speed, search,
+    or visual overwhelm, but none proactively resurface
+    forgotten reply intentions.
+  type: interpretation
+  sources: [Fuermaier_2013, P2A_Community_Reports]
+  relationships:
+    supports: []
+  comments: >
+    Gap analysis: Fuermaier 2013 establishes the prospective
+    memory mechanism; community reports document which tool
+    features users actually encounter (none addressing PM).
+    Typed as interpretation because "no tool" is based on our
+    review's coverage, which may not be exhaustive.
+
+C019:
+  statement: >
+    The "out of sight, out of mind" pattern is described as
+    fundamental by users: "Those apps will NEVER WORK because
+    you have to remember to look at them, which you won't."
+  type: observation
+  sources: [P2A_Community_Reports]
+  relationships:
+    supports: [Prospective Memory Failure]
+  comments: >
+    Direct user quote from r/ADHD_Programmers. This is the
+    circular dependency expressed as a prospective memory
+    problem — the tool itself becomes subject to the deficit
+    it addresses.
+
+# ═══════════════════════════════════════════════════════════════
+# MECHANISM: EMOTIONAL DYSREGULATION
+# Evidence for shame, rejection sensitivity, fear-based barriers
+# ═══════════════════════════════════════════════════════════════
+
+C020:
+  statement: >
+    The overwhelm-burnout cycle follows a documented pattern:
+    time management difficulties → missed deadlines → overtime
+    compensation → energy depletion → stress → emotional
+    dysregulation increases → performance decline → negative
+    feedback → job instability → repeat.
+  type: observation
+  sources: [ADHD_Coaching_Survey]
+  relationships:
+    supports: [Emotional Dysregulation]
+  comments: >
+    Practitioner-documented cascade pattern reported by
+    coaches and occupational therapists. Emotional
+    dysregulation is both a component and an amplifier.
+
+C021:
+  statement: >
+    Users report standard ADHD strategies as explicitly
+    counterproductive: Pomodoro technique interrupts hyperfocus
+    and creates "2 opportunities for failure an hour"; starting
+    with hardest task requires warm-up that doesn't exist;
+    increased pressure causes "brain shutdown."
+  type: observation
+  sources: [P2A_Community_Reports]
+  relationships:
+    supports: [Emotional Dysregulation, Reward and Activation Processing]
+  comments: >
+    The "brain shutdown" under pressure is an emotional
+    dysregulation response. The Pomodoro/hardest-task failures
+    are reward-processing mismatches. Both are active harm
+    from neurotypical-designed tools.
+
+# ═══════════════════════════════════════════════════════════════
+# TOOL FAILURE AND META-CHALLENGES
+# Evidence for why existing products fail
+# ═══════════════════════════════════════════════════════════════
+
+C022:
+  statement: >
+    No productivity tool tested by ADHD users shows sustained
+    success. Users report setup hyperfocus (spending days
+    configuring), followed by abandonment within 3-14 days,
+    creating an "app graveyard." Not a single tool shows
+    >90-day sustained use in community reports.
+  type: observation
+  sources: [P2A_Community_Reports]
+  relationships:
+    supports: [Novelty Decay]
+  comments: >
+    Universal pattern across Notion, Todoist, Trello, ClickUp,
+    Asana, Habitica, Finch. Structural failure, not incidental.
+
+C023:
+  statement: >
+    Five meta-challenges apply universally to any ADHD product:
+    Novelty Decay, Circular Dependency, Shame-Avoidance Spiral,
+    Disclosure Constraint, and Notification Desensitisation.
+  type: synthesis
+  sources:
+    - P2A_Community_Reports
+    - ADHD_Coaching_Survey
+    - Medication_Adherence_2024
+    - Medication_Discontinuation_2024
+    - Digital_Intervention_Dropout
+  relationships:
+    supports: []
+  comments: >
+    Our analytical framework, constructed from five evidence
+    streams: community reports (novelty decay, circular
+    dependency), practitioner data (shame-avoidance, disclosure
+    constraint), and clinical studies (medication adherence and
+    digital intervention dropout as baseline comparators for
+    notification desensitisation and novelty decay). The
+    grouping into five named challenges is our construction;
+    each individual challenge traces to specific evidence.
+
+C024:
+  statement: >
+    ADHD medication adherence averages 56%, with only 27.5%
+    meeting the 80% coverage threshold, and 50-70% discontinuing
+    within the first year. If the gold-standard intervention
+    fails retention, digital tools should expect equal or worse.
+  type: observation
+  sources: [Medication_Adherence_2024, Medication_Discontinuation_2024]
+  relationships:
+    supports: [Novelty Decay]
+  comments: >
+    Two studies: adherence study (n=4,011) for the 56% and
+    27.5% figures; Karolinska multinational study (1.2M
+    patients, 9 countries) for the 50-70% discontinuation
+    figure. The final sentence is our interpretation.
+
+C025:
+  statement: >
+    77% of ADHD adults did not complete self-guided digital
+    interventions in a meta-analysis of treatment dropout.
+    More than 90% drop out after 2 modules in open-distribution
+    self-guided interventions.
+  type: observation
+  sources: [Digital_Intervention_Dropout]
+  relationships:
+    supports: [Novelty Decay, Circular Dependency]
+  comments: >
+    Pettersson et al. 2017 / Nordby et al. 2022. The >90%
+    figure is from broader self-guided interventions (not
+    ADHD-specific). This distinction matters for applying the
+    dropout rate to ADHD-specific products.
+
+C026:
+  statement: >
+    Both coaches and OTs report that ADHD adults face a
+    consistent disclosure dilemma at work: fear of
+    discrimination, uncertainty about whether disclosure helps,
+    managers who don't know how to respond, and lack of
+    organisational ADHD understanding.
+  type: observation
+  sources: [ADHD_Coaching_Survey]
+  relationships:
+    supports: [Disclosure Constraint]
+  comments: >
+    Practitioner-reported pattern. Products must work without
+    requiring the user to explain or justify their ADHD to
+    colleagues.
+
+# ═══════════════════════════════════════════════════════════════
+# ENGAGEMENT MODEL EVIDENCE
+# Structural findings about how models interact with problems
+# ═══════════════════════════════════════════════════════════════
+
+C027:
+  statement: >
+    Users want tools that "intervene before we get stuck, not
+    assistants waiting for us to remember to ask."
+  type: observation
+  sources: [P2A_Community_Reports]
+  relationships:
+    supports: []
+  comments: >
+    Direct user quote. Explicit demand for product-initiated
+    intervention over user-initiated tools.
+
+C028:
+  statement: >
+    Passive Capture and Structured Delivery has zero habit-
+    formation burden and the strongest retention profile because
+    the user changes nothing about how they work. Value
+    compounds over time as the knowledge graph grows.
+  type: interpretation
+  sources: [P2A_Community_Reports, Fuermaier_2013]
+  relationships:
+    supports: []
+  comments: >
+    Community reports provide the evidence base (tool
+    abandonment patterns, habit-formation as failure point);
+    Fuermaier 2013 establishes why prospective memory burden
+    predicts failure. The retention and compounding claims are
+    hypothesised from these structural characteristics, not
+    observed in longitudinal data.
+
+C029:
+  statement: >
+    Structured Check-In / Guided Routine is the model most
+    recommended by practitioners and most abandoned by users.
+    It has the worst meta-challenge vulnerability profile of
+    any engagement model.
+  type: interpretation
+  sources: [ADHD_Coaching_Survey, P2A_Community_Reports]
+  relationships:
+    challenged_by: [C030]
+  comments: >
+    Practitioner recommendation from coaching survey;
+    abandonment from community data. The paradox is explained
+    by practitioners providing external accountability that
+    software cannot replicate.
+
+C030:
+  statement: >
+    Psychosocial interventions (particularly CBT) show
+    significantly larger effects (d=0.56) on work-relevant
+    outcomes than pharmacological interventions (d=0.19) in
+    a 2024 meta-analysis of adult ADHD workplace outcomes.
+  type: observation
+  sources: [Lauder_2024]
+  relationships:
+    supports: []
+  comments: >
+    Tier 1 meta-analysis. Partially qualifies C029 — structured
+    interventions DO work, but the evidence is for human-
+    delivered structured interventions, not software-delivered.
+
+C031:
+  statement: >
+    ADHD coaching/OT interventions incorporating external
+    structure, accountability, and client-selected goals show
+    15-19% improvement in executive function scores from
+    abnormal to normal range, sustained at 3-month follow-up.
+  type: observation
+  sources: [WorkMAP_RCT]
+  relationships:
+    supports: []
+  comments: >
+    Randomised controlled trial (Tier 1). 11 weekly telehealth
+    sessions. External structure is clinically effective. The
+    question is whether software can deliver "external structure"
+    without the human.
+
+C032:
+  statement: >
+    No single engagement model addresses all problem clusters
+    at the "strongly compatible" level. Any product addressing
+    the full problem space requires combining multiple
+    engagement models.
+  type: interpretation
+  sources: [Fuermaier_2021, P2A_Community_Reports, ADHD_Coaching_Survey, Lauder_2024]
+  relationships:
+    supports: []
+  comments: >
+    Derived from our compatibility analysis, which synthesizes
+    across clinical evidence (Fuermaier — problem breadth),
+    community data (tool failure patterns), practitioner
+    reports (intervention modalities), and the Lauder meta-
+    analysis (intervention effect sizes by type). The
+    conclusion that no single model covers all clusters is
+    structural, not directly measured.
+
+C033:
+  statement: >
+    ADHD is heterogeneous. The same engagement model may work
+    well for one profile (primarily inattentive) and poorly
+    for another (primarily hyperactive/impulsive, combined).
+    The research does not differentiate engagement patterns
+    by ADHD subtype.
+  type: caveat
+  sources: [Fuermaier_2021, Norwegian_Employment_Study]
+  relationships: {}
+  comments: >
+    Both studies note sample composition and the inattentive-
+    predominant finding (C006), but neither differentiates
+    engagement or intervention response by subtype. ADHD
+    heterogeneity is universally acknowledged in the clinical
+    literature.
+
+C034:
+  statement: >
+    Engagement model retention profiles are hypothesised based
+    on structural characteristics, not observed in longitudinal
+    data. The "app graveyard" evidence provides negative data
+    on Structured Check-In but limited positive data on other
+    models.
+  type: caveat
+  sources: [P2A_Community_Reports]
+  relationships:
+    challenged_by: []
+  comments: >
+    The positive evidence for tool abandonment is strong
+    (community data on the failure case). The absence of
+    longitudinal retention data for alternative models is
+    the caveat — our retention predictions are structural
+    inferences, not measurements.
+
+C035:
+  statement: >
+    Most ADHD coaching workforce (72.7%) self-identifies as
+    having or suspecting ADHD, with 98.9% using lived
+    experience to inform services. This creates both credibility
+    (lived experience) and potential methodological bias.
+  type: observation
+  sources: [ADHD_Coaching_Survey]
+  relationships: {}
+  comments: >
+    Affects interpretation of all practitioner evidence.
+    Coaches may recommend strategies that work for their own
+    neurotype. The population they serve may not be
+    representative.
