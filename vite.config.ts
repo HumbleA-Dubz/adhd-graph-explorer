@@ -5,8 +5,9 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react(), yaml()],
-  // GitHub Pages base path — repo name for project pages
-  base: '/adhd-graph-explorer/',
+  // Vercel serves at root '/'; GitHub Pages needs '/repo-name/'.
+  // Vercel sets the VERCEL env var during builds.
+  base: process.env.VERCEL ? '/' : '/adhd-graph-explorer/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
