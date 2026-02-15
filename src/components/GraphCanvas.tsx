@@ -58,50 +58,46 @@ export function GraphCanvas() {
     const options = createGraphOptions(g6Data);
 
     async function init() {
-      const graph = new Graph({
-        container,
-        width: container.clientWidth || window.innerWidth,
-        height: container.clientHeight || window.innerHeight,
-        ...options,
-      });
+      let graph: Graph | null = null;
+      try {
+        graph = new Graph({
+          container,
+          width: container.clientWidth || window.innerWidth,
+          height: container.clientHeight || window.innerHeight,
+          ...options,
+        });
 
-      // Register custom behaviors
-      registerGraphBehaviors(graph, {
-        onNodeClick: handleNodeClick,
-        onNodeHover: handleNodeHover,
-        onCanvasClick: handleCanvasClick,
-      });
+        // Register custom behaviors
+        registerGraphBehaviors(graph, {
+          onNodeClick: handleNodeClick,
+          onNodeHover: handleNodeHover,
+          onCanvasClick: handleCanvasClick,
+        });
 
-      // Expose graph ref immediately so resize observer works,
-      // but don't mark ready until render settles.
-      graphRef.current = graph;
+        try {
+          await graph.render();
+        } catch (renderErr) {
+          // G6 v5.0.51 has a known bug where combo processing throws
+          // "r.assign is not a function" — the graph still renders fine.
+          console.warn('[G6] Non-fatal render error (graph may still work):', renderErr);
+        }
+      } catch (err) {
+        console.warn('[G6] Error during init (graph may still work):', err);
+      }
 
-      // Auto fit-to-screen once the force layout stabilizes.
-      const fitOnce = () => {
-        try { graph.fitView(); } catch { /* destroyed */ }
-        graph.off('afterlayout', fitOnce);
-      };
-      graph.on('afterlayout', fitOnce);
-
-      // G6 v5.0.51 render() may reject (r.assign bug) or hang.
-      // Fire-and-forget: the graph draws to canvas progressively
-      // regardless of whether the promise resolves.
-      graph.render().catch((renderErr: unknown) => {
-        console.warn('[G6] Non-fatal render error (graph may still work):', renderErr);
-      });
-
-      // Mark ready after a short delay so the React tree can render
-      // the canvas container, and schedule fitView fallbacks.
-      setTimeout(() => {
+      // Mark ready and expose graph if G6 created canvases
+      if (graph && container.querySelector('canvas')) {
+        graphRef.current = graph;
         setReady(true);
-      }, 300);
 
-      // Fallback fitView calls at staggered intervals to catch
-      // the layout at various stages of the d3-force simulation.
-      for (const delay of [2000, 5000, 10000]) {
-        setTimeout(() => {
-          try { graph.fitView(); } catch { /* destroyed */ }
-        }, delay);
+        // Auto fit-to-screen: listen for layout completion + fallbacks
+        const doFit = () => {
+          try { graph!.fitView(); } catch { /* destroyed */ }
+        };
+        graph.once('afterlayout', doFit);
+        // Staggered fallbacks in case afterlayout doesn't fire
+        setTimeout(doFit, 2000);
+        setTimeout(doFit, 5000);
       }
     }
 
