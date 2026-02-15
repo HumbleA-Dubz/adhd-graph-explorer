@@ -96,6 +96,11 @@ export function GraphCanvas() {
       if (graph && container.querySelector('canvas')) {
         graphRef.current = graph;
         setReady(true);
+
+        // Auto fit-to-screen after layout settles so nodes aren't off-viewport
+        setTimeout(() => {
+          try { graph.fitView(); } catch { /* ignore if graph was destroyed */ }
+        }, 500);
       } else {
         setError('Graph failed to initialize — no canvas was created.');
       }
