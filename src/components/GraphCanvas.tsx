@@ -97,10 +97,18 @@ export function GraphCanvas() {
         graphRef.current = graph;
         setReady(true);
 
-        // Auto fit-to-screen after layout settles so nodes aren't off-viewport
+        // Auto fit-to-screen once the force layout stabilizes.
+        // G6 fires 'afterlayout' when the simulation ends.
+        const fitOnce = () => {
+          try { graph.fitView(); } catch { /* destroyed */ }
+          graph.off('afterlayout', fitOnce);
+        };
+        graph.on('afterlayout', fitOnce);
+
+        // Fallback: if afterlayout never fires (bug), fit after 4s
         setTimeout(() => {
-          try { graph.fitView(); } catch { /* ignore if graph was destroyed */ }
-        }, 500);
+          try { graph.fitView(); } catch { /* destroyed */ }
+        }, 4000);
       } else {
         setError('Graph failed to initialize — no canvas was created.');
       }
