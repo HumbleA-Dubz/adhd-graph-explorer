@@ -58,8 +58,9 @@ export function GraphCanvas() {
     const options = createGraphOptions(g6Data);
 
     async function init() {
+      let graph: Graph | null = null;
       try {
-        const graph = new Graph({
+        graph = new Graph({
           container,
           width: container.clientWidth || window.innerWidth,
           height: container.clientHeight || window.innerHeight,
@@ -73,23 +74,30 @@ export function GraphCanvas() {
           onCanvasClick: handleCanvasClick,
         });
 
-        try {
-          await graph.render();
-        } catch (renderErr) {
-          // G6 v5.0.51 has a known bug where combo processing throws
-          // "r.assign is not a function" — the graph still renders fine.
-          // Log but don't treat as fatal.
-          console.warn('[G6] Non-fatal render error (graph may still work):', renderErr);
-        }
+        // G6 v5.0.51 render() may throw (r.assign bug) or hang.
+        // Race it against a timeout so the UI is never stuck loading.
+        const renderWithTimeout = Promise.race([
+          graph.render().catch((renderErr: unknown) => {
+            console.warn('[G6] Non-fatal render error (graph may still work):', renderErr);
+          }),
+          new Promise<void>((resolve) => setTimeout(resolve, 8000)),
+        ]);
 
-        // Only store ref and mark ready AFTER render completes,
-        // so filter/preset effects don't call setElementVisibility
-        // on elements that don't exist yet.
+        await renderWithTimeout;
+      } catch (err) {
+        // Even if something throws, the graph canvas may have drawn
+        // successfully — log but don't block the UI.
+        console.warn('[G6] Error during init (graph may still work):', err);
+      }
+
+      // Always expose the graph and mark ready if we have a graph
+      // instance and the container still has canvas children
+      // (indicating G6 drew something).
+      if (graph && container.querySelector('canvas')) {
         graphRef.current = graph;
         setReady(true);
-      } catch (err) {
-        console.error('G6 render failed:', err);
-        setError(err instanceof Error ? err.message : String(err));
+      } else {
+        setError('Graph failed to initialize — no canvas was created.');
       }
     }
 
