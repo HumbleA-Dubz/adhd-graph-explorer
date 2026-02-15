@@ -5,6 +5,8 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react(), yaml()],
+  // GitHub Pages base path — repo name for project pages
+  base: '/adhd-graph-explorer/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
