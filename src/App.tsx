@@ -1,13 +1,18 @@
 import { GraphCanvas } from './components/GraphCanvas';
+import { Toolbar } from './components/Toolbar';
+import { DetailPanel } from './components/DetailPanel';
 
 export default function App() {
   return (
-    <div style={{ display: 'flex', width: '100%', height: '100%' }}>
-      {/* Toolbar will go on the left */}
-      <div style={{ flex: 1, position: 'relative' }}>
-        <GraphCanvas />
-      </div>
-      {/* Detail panel will go on the right */}
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      {/* Graph canvas fills the entire viewport */}
+      <GraphCanvas />
+
+      {/* Toolbar overlays top-left: FilterPanel + PresetSelector */}
+      <Toolbar />
+
+      {/* Detail panel slides in from the right when a node is selected */}
+      <DetailPanel />
     </div>
   );
 }

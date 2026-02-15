@@ -173,7 +173,7 @@ IMP09:
   affects:
     - Build sequencing
     - Resource allocation
-    - "What to build now" decisions
+    - '"What to build now" decisions'
 
 IMP10:
   name: Meeting memory and email have a favourable risk profile in our analysis

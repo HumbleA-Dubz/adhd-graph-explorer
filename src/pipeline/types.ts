@@ -11,8 +11,8 @@ export type EntityType =
   | 'source'
   | 'implication';
 
-/** Types that appear as nodes on the canvas (claims + sources are off-canvas) */
-export type CanvasEntityType = Exclude<EntityType, 'claim' | 'source'>;
+/** Types that appear as nodes on the canvas (claims, sources, clusters are off-canvas) */
+export type CanvasEntityType = Exclude<EntityType, 'claim' | 'source' | 'cluster'>;
 
 export const CANVAS_ENTITY_TYPES: readonly CanvasEntityType[] = [
   'problem',
