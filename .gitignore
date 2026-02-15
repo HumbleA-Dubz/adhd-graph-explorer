@@ -3,5 +3,5 @@ dist/
 *.local
 .vite/
 
-# Generated graph data
-src/data/graph.json
+# Generated graph data (now committed for reliable Vercel builds)
+# src/data/graph.json
