@@ -140,9 +140,8 @@ function parseImplications(dir: string): Entity[] {
   for (const [key, value] of Object.entries(raw)) {
     const v = value as Record<string, unknown>;
     const name = (v.name as string) ?? key;
-    entities.push(
-      makeEntity(v.id as string, 'implication', name, key, v),
-    );
+    // Implications use their top-level key as ID (IMP01 etc.)
+    entities.push(makeEntity(key, 'implication', name, key, v));
   }
   return entities;
 }
