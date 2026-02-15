@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Graph } from '@antv/g6';
 import graphJson from '@/data/graph.json';
 import { useStore } from '@/store';
@@ -12,6 +12,8 @@ export function GraphCanvas() {
   const graphRef = useRef<Graph | null>(null);
   const graphDataRef = useRef<GraphData | null>(null);
   const initializedRef = useRef(false);
+  const [error, setError] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
 
   const setGraphData = useStore(state => state.setGraphData);
   const setSelectedNode = useStore(state => state.setSelectedNode);
@@ -44,6 +46,8 @@ export function GraphCanvas() {
     if (initializedRef.current || !containerRef.current) return;
     initializedRef.current = true;
 
+    const container = containerRef.current;
+
     // Load data into Zustand store
     const graphData = graphJson as unknown as GraphData;
     setGraphData(graphData);
@@ -53,24 +57,38 @@ export function GraphCanvas() {
     const g6Data = transformGraphData(graphData);
     const options = createGraphOptions(g6Data);
 
-    const graph = new Graph({
-      container: containerRef.current,
-      ...options,
-    });
+    async function init() {
+      try {
+        const graph = new Graph({
+          container,
+          width: container.clientWidth || window.innerWidth,
+          height: container.clientHeight || window.innerHeight,
+          ...options,
+        });
 
-    // Register custom behaviors
-    registerGraphBehaviors(graph, {
-      onNodeClick: handleNodeClick,
-      onNodeHover: handleNodeHover,
-      onCanvasClick: handleCanvasClick,
-    });
+        // Register custom behaviors
+        registerGraphBehaviors(graph, {
+          onNodeClick: handleNodeClick,
+          onNodeHover: handleNodeHover,
+          onCanvasClick: handleCanvasClick,
+        });
 
-    graph.render();
-    graphRef.current = graph;
+        await graph.render();
+        graphRef.current = graph;
+        setReady(true);
+      } catch (err) {
+        console.error('G6 render failed:', err);
+        setError(err instanceof Error ? err.message : String(err));
+      }
+    }
+
+    init();
 
     return () => {
-      graph.destroy();
-      graphRef.current = null;
+      if (graphRef.current) {
+        graphRef.current.destroy();
+        graphRef.current = null;
+      }
       initializedRef.current = false;
     };
   }, [setGraphData, handleNodeClick, handleNodeHover, handleCanvasClick]);
@@ -178,12 +196,34 @@ export function GraphCanvas() {
     }
   }, []);
 
+  if (error) {
+    return (
+      <div style={{ padding: '40px', fontFamily: 'monospace', color: '#da1e28' }}>
+        <h2>Graph failed to render</h2>
+        <pre style={{ whiteSpace: 'pre-wrap', marginTop: '12px', background: '#f4f4f4', padding: '16px', borderRadius: '4px' }}>
+          {error}
+        </pre>
+      </div>
+    );
+  }
+
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <div
         ref={containerRef}
         style={{ width: '100%', height: '100%' }}
       />
+      {/* Loading indicator */}
+      {!ready && (
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: '#525252', fontSize: '14px', fontFamily: 'system-ui, sans-serif',
+          pointerEvents: 'none',
+        }}>
+          Laying out graph…
+        </div>
+      )}
       {/* Fit-to-screen button — bottom-right corner */}
       <button
         onClick={handleFitView}
