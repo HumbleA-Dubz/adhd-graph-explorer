@@ -1,7 +1,7 @@
 import type { NodeData, EdgeData, ComboData, GraphData as G6GraphData } from '@antv/g6';
 import type { GraphData } from '@/pipeline/types';
-import { nodeStyleConfig, edgeStyleConfig, comboStyleConfig } from './styles';
-import { layoutConfig } from './layouts';
+import { edgeStyleConfig, overviewNodeStyleConfig, aggregateNodeStyleConfig } from './styles';
+import { overviewLayoutConfig, neighborhoodLayoutConfig } from './layouts';
 
 /**
  * Transform our GraphData into G6 v5 format.
@@ -22,7 +22,6 @@ export function transformGraphData(graphData: GraphData): G6GraphData {
     ...(node.comboId ? { combo: node.comboId } : {}),
   }));
 
-  // Only keep edges where both source and target are canvas nodes
   const edges: EdgeData[] = graphData.edges
     .filter(e => canvasNodeIds.has(e.source) && canvasNodeIds.has(e.target))
     .map(edge => ({
@@ -46,16 +45,33 @@ export function transformGraphData(graphData: GraphData): G6GraphData {
   return { nodes, edges, combos };
 }
 
-/** Build the G6 Graph configuration options */
-export function createGraphOptions(data: G6GraphData) {
+/** Build G6 Graph configuration for overview mode */
+export function createOverviewGraphOptions(data: G6GraphData) {
   return {
     data,
-    node: nodeStyleConfig,
+    node: overviewNodeStyleConfig,
     edge: edgeStyleConfig,
-    combo: comboStyleConfig,
-    layout: layoutConfig,
+    layout: overviewLayoutConfig,
     behaviors: ['drag-canvas', 'zoom-canvas', 'drag-element'],
     autoFit: 'view' as const,
     animation: true,
   };
+}
+
+/** Build G6 Graph configuration for neighborhood mode */
+export function createNeighborhoodGraphOptions(data: G6GraphData) {
+  return {
+    data,
+    node: aggregateNodeStyleConfig,
+    edge: edgeStyleConfig,
+    layout: neighborhoodLayoutConfig,
+    behaviors: ['drag-canvas', 'zoom-canvas', 'drag-element'],
+    autoFit: 'view' as const,
+    animation: true,
+  };
+}
+
+/** Legacy: full-graph options */
+export function createGraphOptions(data: G6GraphData) {
+  return createOverviewGraphOptions(data);
 }

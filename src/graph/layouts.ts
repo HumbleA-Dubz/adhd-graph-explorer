@@ -1,38 +1,50 @@
-import { LINK_DISTANCE, NODE_SPACING } from '@/theme/constants';
-
 /**
- * G6 v5 layout configuration.
- * Using d3-force for reliable force-directed layout.
- * combo-combined has a known r.assign bug in G6 v5.0.51.
+ * G6 v5 layout configurations for the two view modes.
  *
- * Parameter structure follows @antv/layout D3ForceLayoutOptions:
- * forces are configured as nested objects (manyBody, collide, link, center).
+ * Overview: ~9 nodes (3 clusters + 6 mechanisms) — gentle d3-force
+ * Neighborhood: center node + aggregated neighbors — radial layout
  */
-export const layoutConfig = {
+
+/** Overview mode: gentle force for ~9 nodes, settles fast */
+export const overviewLayoutConfig = {
   type: 'd3-force' as const,
-  // alphaDecay controls how quickly the simulation settles.
-  // 0.028 = ~300 iterations (default, too fast), 0.006 = ~1500 (too slow)
-  // 0.015 ≈ ~600 iterations, settling in ~10-15 seconds
-  alphaDecay: 0.015,
+  alphaDecay: 0.05,   // fast settle for <10 nodes
   alphaMin: 0.001,
-  // Very strong charge repulsion — 325 edges create massive inward pull,
-  // so repulsion must dominate to keep the dense center readable
   manyBody: {
-    strength: -4000,
+    strength: -600,
   },
-  // Generous collision radius to prevent node + label overlap
-  collide: {
-    radius: NODE_SPACING,
-    strength: 1.0,
-    iterations: 4,
-  },
-  // Weak link force — enough to show structure, not enough to collapse center
   link: {
-    distance: LINK_DISTANCE,
-    strength: 0.15,   // very weak edge pull (default ~0.5–1.0)
+    distance: 200,
+    strength: 0.5,
   },
-  // Very weak center gravity — just keeps the graph on screen
   center: {
-    strength: 0.01,
+    strength: 0.1,
+  },
+  collide: {
+    radius: 80,
+    strength: 1.0,
+    iterations: 3,
+  },
+};
+
+/** Neighborhood mode: radial layout centered on the focus node */
+export const neighborhoodLayoutConfig = {
+  type: 'd3-force' as const,
+  alphaDecay: 0.08,   // very fast settle for small neighborhoods
+  alphaMin: 0.001,
+  manyBody: {
+    strength: -400,
+  },
+  link: {
+    distance: 160,
+    strength: 0.6,
+  },
+  center: {
+    strength: 0.15,
+  },
+  collide: {
+    radius: 70,
+    strength: 1.0,
+    iterations: 3,
   },
 };

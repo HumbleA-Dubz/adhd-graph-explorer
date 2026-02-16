@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useStore } from '@/store';
 import { TYPE_COLORS, TYPE_LABELS } from '@/theme/palette';
-import { CANVAS_ENTITY_TYPES } from '@/pipeline/types';
+import type { CanvasEntityType } from '@/pipeline/types';
 
 const CLUSTER_LABELS: Record<string, string> = {
   CL_A: 'Cluster A',
@@ -11,26 +11,25 @@ const CLUSTER_LABELS: Record<string, string> = {
 
 export function FilterPanel() {
   const [isExpanded, setIsExpanded] = useState(true);
-  const visibleEntityTypes = useStore(state => state.visibleEntityTypes);
-  const toggleEntityType = useStore(state => state.toggleEntityType);
-  const visibleClusters = useStore(state => state.visibleClusters);
-  const toggleCluster = useStore(state => state.toggleCluster);
+  const viewMode = useStore(state => state.viewMode);
+  const focusNodeId = useStore(state => state.focusNodeId);
+  const expandedGroups = useStore(state => state.expandedGroups);
+  const expandGroup = useStore(state => state.expandGroup);
+  const collapseGroup = useStore(state => state.collapseGroup);
+  const getNeighborhoodData = useStore(state => state.getNeighborhoodData);
 
-  const handleToggleAll = (section: 'types' | 'clusters', enable: boolean) => {
-    if (section === 'types') {
-      CANVAS_ENTITY_TYPES.forEach(type => {
-        const isVisible = visibleEntityTypes.has(type);
-        if (enable && !isVisible) toggleEntityType(type);
-        if (!enable && isVisible) toggleEntityType(type);
-      });
-    } else {
-      Object.keys(CLUSTER_LABELS).forEach(clusterId => {
-        const isVisible = visibleClusters.has(clusterId);
-        if (enable && !isVisible) toggleCluster(clusterId);
-        if (!enable && isVisible) toggleCluster(clusterId);
-      });
+  // In neighborhood mode, show what type groups are present
+  const neighborhoodTypes: { type: CanvasEntityType; count: number }[] = [];
+  if (viewMode === 'neighborhood' && focusNodeId) {
+    const data = getNeighborhoodData(focusNodeId);
+    if (data) {
+      for (const [type, nodes] of data.neighborsByType) {
+        neighborhoodTypes.push({ type, count: nodes.length });
+      }
+      // Sort by count descending
+      neighborhoodTypes.sort((a, b) => b.count - a.count);
     }
-  };
+  }
 
   return (
     <div
@@ -60,7 +59,7 @@ export function FilterPanel() {
           color: '#161616',
         }}
       >
-        <span>Filters</span>
+        <span>{viewMode === 'overview' ? 'Legend' : 'Neighbors'}</span>
         <span style={{ color: '#525252', fontSize: '11px' }}>
           {isExpanded ? '▼' : '▶'}
         </span>
@@ -68,160 +67,158 @@ export function FilterPanel() {
 
       {isExpanded && (
         <div style={{ padding: '16px' }}>
-          {/* Entity Types Section */}
-          <div style={{ marginBottom: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#525252' }}>
-                Entity Types
+          {viewMode === 'overview' ? (
+            /* ── Overview mode: show legend of what's on screen ── */
+            <div>
+              <div style={{ fontSize: '12px', fontWeight: 600, color: '#525252', marginBottom: '10px' }}>
+                Overview Nodes
               </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button
-                  onClick={() => handleToggleAll('types', true)}
-                  style={{
-                    padding: '2px 8px',
-                    fontSize: '11px',
-                    background: 'none',
-                    border: '1px solid #c6c6c6',
-                    borderRadius: '3px',
-                    cursor: 'pointer',
-                    color: '#525252',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#e0e0e0';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'none';
-                  }}
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => handleToggleAll('types', false)}
-                  style={{
-                    padding: '2px 8px',
-                    fontSize: '11px',
-                    background: 'none',
-                    border: '1px solid #c6c6c6',
-                    borderRadius: '3px',
-                    cursor: 'pointer',
-                    color: '#525252',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#e0e0e0';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'none';
-                  }}
-                >
-                  None
-                </button>
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {CANVAS_ENTITY_TYPES.map(type => (
-                <label
-                  key={type}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {/* Clusters */}
+                {Object.entries(CLUSTER_LABELS).map(([clusterId, label]) => (
+                  <div
+                    key={clusterId}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      fontSize: '13px',
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: '12px',
+                        height: '8px',
+                        borderRadius: '2px',
+                        background: '#6929C4',
+                        flexShrink: 0,
+                      }}
+                    />
+                    <span style={{ color: '#161616' }}>{label}</span>
+                  </div>
+                ))}
+                {/* Mechanisms */}
+                <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    cursor: 'pointer',
                     fontSize: '13px',
+                    marginTop: '4px',
                   }}
                 >
-                  <input
-                    type="checkbox"
-                    checked={visibleEntityTypes.has(type)}
-                    onChange={() => toggleEntityType(type)}
-                    style={{ cursor: 'pointer' }}
-                  />
                   <span
                     style={{
                       width: '10px',
                       height: '10px',
                       borderRadius: '50%',
-                      background: TYPE_COLORS[type],
+                      background: TYPE_COLORS['mechanism'],
                       flexShrink: 0,
                     }}
                   />
-                  <span style={{ color: '#161616' }}>{TYPE_LABELS[type]}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Clusters Section */}
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#525252' }}>
-                Clusters
+                  <span style={{ color: '#161616' }}>Mechanisms (6)</span>
+                </div>
               </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button
-                  onClick={() => handleToggleAll('clusters', true)}
-                  style={{
-                    padding: '2px 8px',
-                    fontSize: '11px',
-                    background: 'none',
-                    border: '1px solid #c6c6c6',
-                    borderRadius: '3px',
-                    cursor: 'pointer',
-                    color: '#525252',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#e0e0e0';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'none';
-                  }}
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => handleToggleAll('clusters', false)}
-                  style={{
-                    padding: '2px 8px',
-                    fontSize: '11px',
-                    background: 'none',
-                    border: '1px solid #c6c6c6',
-                    borderRadius: '3px',
-                    cursor: 'pointer',
-                    color: '#525252',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#e0e0e0';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'none';
-                  }}
-                >
-                  None
-                </button>
+              <div style={{
+                marginTop: '12px',
+                fontSize: '11px',
+                color: '#8d8d8d',
+                lineHeight: '1.4',
+              }}>
+                Click a node to explore its neighborhood
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {Object.entries(CLUSTER_LABELS).map(([clusterId, label]) => (
-                <label
-                  key={clusterId}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    cursor: 'pointer',
-                    fontSize: '13px',
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={visibleClusters.has(clusterId)}
-                    onChange={() => toggleCluster(clusterId)}
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <span style={{ color: '#161616' }}>{label}</span>
-                </label>
-              ))}
+          ) : (
+            /* ── Neighborhood mode: show neighbor type groups ── */
+            <div>
+              {neighborhoodTypes.length === 0 ? (
+                <div style={{ fontSize: '12px', color: '#8d8d8d' }}>
+                  No neighbors to display
+                </div>
+              ) : (
+                <>
+                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#525252', marginBottom: '10px' }}>
+                    Neighbor Groups
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {neighborhoodTypes.map(({ type, count }) => {
+                      const isGroupExpanded = expandedGroups.has(type);
+                      return (
+                        <button
+                          key={type}
+                          onClick={() => {
+                            if (isGroupExpanded) {
+                              collapseGroup(type);
+                            } else {
+                              expandGroup(type);
+                            }
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '6px 8px',
+                            background: isGroupExpanded ? '#e8e8e8' : 'transparent',
+                            border: '1px solid',
+                            borderColor: isGroupExpanded ? '#c6c6c6' : 'transparent',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            width: '100%',
+                            textAlign: 'left',
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isGroupExpanded) {
+                              e.currentTarget.style.background = '#f4f4f4';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isGroupExpanded) {
+                              e.currentTarget.style.background = 'transparent';
+                            }
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: '10px',
+                              height: '10px',
+                              borderRadius: '50%',
+                              background: TYPE_COLORS[type] ?? '#8d8d8d',
+                              flexShrink: 0,
+                            }}
+                          />
+                          <span style={{ color: '#161616', flex: 1 }}>
+                            {TYPE_LABELS[type] ?? type}
+                          </span>
+                          <span style={{
+                            fontSize: '11px',
+                            color: '#525252',
+                            background: '#e0e0e0',
+                            borderRadius: '10px',
+                            padding: '1px 7px',
+                            fontWeight: 500,
+                          }}>
+                            {count}
+                          </span>
+                          <span style={{ fontSize: '10px', color: '#8d8d8d' }}>
+                            {isGroupExpanded ? '▼' : '▶'}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div style={{
+                    marginTop: '12px',
+                    fontSize: '11px',
+                    color: '#8d8d8d',
+                    lineHeight: '1.4',
+                  }}>
+                    Click to expand/collapse groups
+                  </div>
+                </>
+              )}
             </div>
-          </div>
+          )}
         </div>
       )}
     </div>

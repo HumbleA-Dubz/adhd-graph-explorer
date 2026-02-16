@@ -1,12 +1,16 @@
 import { GraphCanvas } from './components/GraphCanvas';
 import { Toolbar } from './components/Toolbar';
 import { DetailPanel } from './components/DetailPanel';
+import { NavigationBar } from './components/NavigationBar';
 
 export default function App() {
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       {/* Graph canvas fills the entire viewport */}
       <GraphCanvas />
+
+      {/* Navigation breadcrumb (visible in neighborhood mode) */}
+      <NavigationBar />
 
       {/* Toolbar overlays top-left: FilterPanel + PresetSelector */}
       <Toolbar />
