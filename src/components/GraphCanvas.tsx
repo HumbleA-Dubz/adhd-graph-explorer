@@ -134,51 +134,10 @@ export function GraphCanvas() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [setSelectedNode]);
 
-  // Respond to filter changes: visibleEntityTypes
+  // Respond to filter changes: visibleEntityTypes + visibleClusters
+  // Uses setElementState with a 'filtered' state (opacity:0, pointerEvents:none)
+  // instead of setElementVisibility which is buggy in G6 v5.0.51.
   const visibleEntityTypes = useStore(state => state.visibleEntityTypes);
-  useEffect(() => {
-    if (!ready) return;
-    const graph = graphRef.current;
-    if (!graph) return;
-
-    try {
-      const allNodes = graph.getNodeData();
-      for (const node of allNodes) {
-        const entityType = (node.data as Record<string, unknown>)?.entityType as CanvasEntityType | undefined;
-        if (!entityType) continue;
-
-        const shouldBeVisible = visibleEntityTypes.has(entityType);
-        graph.setElementVisibility(node.id as string, shouldBeVisible ? 'visible' : 'hidden');
-
-        // Hide edges where this node is hidden
-        if (!shouldBeVisible) {
-          const relatedEdges = graph.getRelatedEdgesData(node.id as string);
-          for (const edge of relatedEdges) {
-            graph.setElementVisibility(edge.id as string, 'hidden');
-          }
-        }
-      }
-
-      // Re-show edges where BOTH endpoints are visible
-      const allEdges = graph.getEdgeData();
-      for (const edge of allEdges) {
-        const sourceData = graph.getNodeData(edge.source as string);
-        const targetData = graph.getNodeData(edge.target as string);
-        if (!sourceData || !targetData) continue;
-
-        const sourceType = (sourceData.data as Record<string, unknown>)?.entityType as CanvasEntityType | undefined;
-        const targetType = (targetData.data as Record<string, unknown>)?.entityType as CanvasEntityType | undefined;
-
-        if (sourceType && targetType && visibleEntityTypes.has(sourceType) && visibleEntityTypes.has(targetType)) {
-          graph.setElementVisibility(edge.id as string, 'visible');
-        }
-      }
-    } catch {
-      // Elements may not exist yet during initial render — safe to ignore
-    }
-  }, [visibleEntityTypes, ready]);
-
-  // Respond to filter changes: visibleClusters
   const visibleClusters = useStore(state => state.visibleClusters);
   useEffect(() => {
     if (!ready) return;
@@ -186,16 +145,47 @@ export function GraphCanvas() {
     if (!graph) return;
 
     try {
+      const states: Record<string, string[]> = {};
+
+      // Build a set of visible node IDs for edge filtering
+      const visibleNodeIds = new Set<string>();
+
+      // Filter nodes by entity type
+      const allNodes = graph.getNodeData();
+      for (const node of allNodes) {
+        const id = node.id as string;
+        const entityType = (node.data as Record<string, unknown>)?.entityType as CanvasEntityType | undefined;
+        if (!entityType) continue;
+
+        if (visibleEntityTypes.has(entityType)) {
+          visibleNodeIds.add(id);
+          states[id] = []; // clear filtered state
+        } else {
+          states[id] = ['filtered'];
+        }
+      }
+
+      // Filter edges: only visible if BOTH endpoints are visible
+      const allEdges = graph.getEdgeData();
+      for (const edge of allEdges) {
+        const id = edge.id as string;
+        const sourceVisible = visibleNodeIds.has(edge.source as string);
+        const targetVisible = visibleNodeIds.has(edge.target as string);
+        states[id] = (sourceVisible && targetVisible) ? [] : ['filtered'];
+      }
+
+      // Filter combos by cluster visibility
       const allCombos = graph.getComboData();
       for (const combo of allCombos) {
-        const comboId = combo.id as string;
-        const shouldBeVisible = visibleClusters.has(comboId);
-        graph.setElementVisibility(comboId, shouldBeVisible ? 'visible' : 'hidden');
+        const id = combo.id as string;
+        states[id] = visibleClusters.has(id) ? [] : ['filtered'];
       }
+
+      graph.setElementState(states);
     } catch {
       // Elements may not exist yet during initial render — safe to ignore
     }
-  }, [visibleClusters, ready]);
+  }, [visibleEntityTypes, visibleClusters, ready]);
 
   // Handle window resize with ResizeObserver
   useEffect(() => {

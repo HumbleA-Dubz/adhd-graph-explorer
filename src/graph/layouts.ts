@@ -12,7 +12,11 @@ export const layoutConfig = {
   nodeSpacing: NODE_SPACING,
   linkDistance: LINK_DISTANCE,
   forceSimulation: null,
-  alphaDecay: 0.028,
+  // Let the simulation run longer before settling (lower = more iterations)
+  alphaDecay: 0.008,
   alphaMin: 0.001,
-  collideStrength: 0.8,
+  // Strong collision detection to prevent overlap
+  collideStrength: 1.0,
+  // Strong charge repulsion to spread nodes apart (negative = repel)
+  manyBodyStrength: -800,
 };

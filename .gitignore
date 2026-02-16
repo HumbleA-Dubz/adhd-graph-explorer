@@ -5,3 +5,9 @@ dist/
 
 # Generated graph data (now committed for reliable Vercel builds)
 # src/data/graph.json
+
+# Vercel CLI
+.vercel/
+
+# TypeScript build info
+tsconfig.tsbuildinfo

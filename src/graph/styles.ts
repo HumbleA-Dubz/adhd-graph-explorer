@@ -74,6 +74,10 @@ export const nodeStyleConfig = {
     dim: {
       opacity: DIM_OPACITY,
     },
+    filtered: {
+      opacity: 0,
+      pointerEvents: 'none' as const,
+    },
     selected: {
       lineWidth: 3,
       stroke: '#0f62fe',
@@ -99,6 +103,10 @@ export const edgeStyleConfig = {
     },
     dim: {
       opacity: DIM_OPACITY,
+    },
+    filtered: {
+      opacity: 0,
+      pointerEvents: 'none' as const,
     },
   },
 };
@@ -129,6 +137,10 @@ export const comboStyleConfig = {
   state: {
     dim: {
       opacity: DIM_OPACITY,
+    },
+    filtered: {
+      opacity: 0,
+      pointerEvents: 'none' as const,
     },
   },
 };
