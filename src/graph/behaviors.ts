@@ -33,7 +33,9 @@ export function registerGraphBehaviors(
     clearHighlight(graph);
   });
 
-  // ── Click ───────────────────────────────────────────────────
+  // ── Click (with debounce for center node to avoid dblclick race) ────
+  let centerClickTimer: ReturnType<typeof setTimeout> | null = null;
+
   graph.on('node:click', (evt: IPointerEvent) => {
     const nodeId = (evt.target as unknown as { id: string }).id;
 
@@ -47,7 +49,7 @@ export function registerGraphBehaviors(
           callbacks.onClusterClick(nodeId);
           return;
         }
-      } catch { /* not found */ }
+      } catch { /* node data not found */ }
       // Non-cluster node in overview (mechanism) → enter neighborhood on it
       callbacks.onNodeClick(nodeId);
       return;
@@ -62,13 +64,17 @@ export function registerGraphBehaviors(
       return;
     }
 
-    // Check if it's the center node
+    // Check if it's the center node — delay to allow dblclick to cancel
     try {
       const nodeData = graph.getNodeData(nodeId);
       const data = nodeData?.data as Record<string, unknown> | undefined;
       const isCenter = data?.isCenter as boolean | undefined;
       if (isCenter) {
-        callbacks.onCenterClick(nodeId);
+        if (centerClickTimer) clearTimeout(centerClickTimer);
+        centerClickTimer = setTimeout(() => {
+          centerClickTimer = null;
+          callbacks.onCenterClick(nodeId);
+        }, 250);
         return;
       }
     } catch { /* not found */ }
@@ -77,10 +83,15 @@ export function registerGraphBehaviors(
     callbacks.onNeighborClick(nodeId);
   });
 
-  // ── Double-click: always open detail panel ──────────────────
+  // ── Double-click: cancel pending single-click, open detail panel ──
   graph.on('node:dblclick', (evt: IPointerEvent) => {
     const nodeId = (evt.target as unknown as { id: string }).id;
     if (!isAggregateNode(nodeId)) {
+      // Cancel the debounced single-click so it doesn't toggle
+      if (centerClickTimer) {
+        clearTimeout(centerClickTimer);
+        centerClickTimer = null;
+      }
       callbacks.onCenterClick(nodeId);
     }
   });

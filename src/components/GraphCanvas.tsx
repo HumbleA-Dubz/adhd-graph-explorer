@@ -123,9 +123,8 @@ export function GraphCanvas() {
             navigateToNeighbor(nodeId);
           },
           onCenterClick: (nodeId: string) => {
-            // Toggle selection for detail panel
-            const current = useStore.getState().selectedNodeId;
-            setSelectedNode(current === nodeId ? null : nodeId);
+            // Always select (deselection via canvas click or panel close)
+            setSelectedNode(nodeId);
           },
           onClusterClick: (clusterId: string) => {
             const hubId = getClusterHub(clusterId);

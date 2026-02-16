@@ -5,7 +5,12 @@ interface MechanismDetailProps {
 export function MechanismDetail({ data }: MechanismDetailProps) {
   const plainLanguage = data.plain_language as string | undefined;
   const variability = data.variability as string | undefined;
-  const doesNotExplain = data.does_not_explain as string[] | undefined;
+  const rawDoesNotExplain = data.does_not_explain;
+  const doesNotExplain = Array.isArray(rawDoesNotExplain)
+    ? rawDoesNotExplain as string[]
+    : typeof rawDoesNotExplain === 'string'
+      ? [rawDoesNotExplain]
+      : undefined;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -36,7 +41,7 @@ export function MechanismDetail({ data }: MechanismDetailProps) {
           </div>
           <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: '#161616' }}>
             {doesNotExplain.map((item, i) => (
-              <li key={i}>{item}</li>
+              <li key={i}>{String(item)}</li>
             ))}
           </ul>
         </div>
