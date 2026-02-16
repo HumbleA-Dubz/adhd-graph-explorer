@@ -96,8 +96,8 @@ export function GraphCanvas() {
         };
         graph.once('afterlayout', doFit);
         // Staggered fallbacks in case afterlayout doesn't fire
-        setTimeout(doFit, 2000);
         setTimeout(doFit, 5000);
+        setTimeout(doFit, 12000);
       }
     }
 
