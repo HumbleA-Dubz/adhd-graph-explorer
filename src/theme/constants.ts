@@ -28,5 +28,5 @@ export const TRANSITION_EASING = 'ease-in-out';
 
 /** Layout */
 export const COMBO_PADDING = 30;
-export const LINK_DISTANCE = 400;
-export const NODE_SPACING = 80;
+export const LINK_DISTANCE = 500;
+export const NODE_SPACING = 100;

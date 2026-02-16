@@ -15,23 +15,24 @@ export const layoutConfig = {
   // 0.015 ≈ ~600 iterations, settling in ~10-15 seconds
   alphaDecay: 0.015,
   alphaMin: 0.001,
-  // Strong charge repulsion to spread 62 nodes with 325 edges apart
+  // Very strong charge repulsion — 325 edges create massive inward pull,
+  // so repulsion must dominate to keep the dense center readable
   manyBody: {
-    strength: -2000,
+    strength: -4000,
   },
-  // Strong collision detection to prevent node overlap
+  // Generous collision radius to prevent node + label overlap
   collide: {
     radius: NODE_SPACING,
     strength: 1.0,
-    iterations: 3,
+    iterations: 4,
   },
-  // Link force — longer distance = more spread
+  // Weak link force — enough to show structure, not enough to collapse center
   link: {
     distance: LINK_DISTANCE,
-    strength: 0.3,   // weaken edge pull (default ~0.5–1.0)
+    strength: 0.15,   // very weak edge pull (default ~0.5–1.0)
   },
-  // Weak center gravity so nodes spread further out
+  // Very weak center gravity — just keeps the graph on screen
   center: {
-    strength: 0.02,
+    strength: 0.01,
   },
 };
